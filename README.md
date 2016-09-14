@@ -1,8 +1,8 @@
-# What is this?
+## What is this?
 
 AWS のインスタンス一覧を表示する、Laravel コンソールアプリのサンプルです。
 
-# Prerequisite
+## Prerequisite
 
 - Vagrant + VirtualBox を使った CentOS7.x 環境の作成
   - https://github.com/hotta/vagrant-cent72-box
@@ -11,9 +11,9 @@ AWS のインスタンス一覧を表示する、Laravel コンソールアプ�
   - https://github.com/hotta/laravel-centos7
   - php-7.x + nginx + php-fpm + laravel-5.2.x + php-sdk-php-laravel-3.0 になります。
 
-# Quick start
+## Quick start
 
-## 上記手順を使った場合、LARAVEL_HOME は /var/www/laravel になります。
+### 上記手順を使った場合、LARAVEL_HOME は /var/www/laravel になります。
 
 ```bash
 $ git clone git@github.com:hotta/laravel-aws.git
@@ -31,7 +31,7 @@ dev-comsh     172.16.1.10   stopped    i-0XXXXXXXXXXXXXX96
 
 ```
 
-# AWS 認証情報
+## AWS 認証情報
 
-権限のないホストから実行する場合は [~/.aws/credential](http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles) を設定してください。
+AWS への API リクエスト権限のない（AMI ロールを付与されていない）ホストから実行する場合は、 [~/.aws/credential](http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles) を設定してください。
 
