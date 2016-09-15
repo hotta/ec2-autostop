@@ -45,7 +45,7 @@ class Ec2 extends Command
     $tagname = $this->option('tagname');
     if (!$instance_id && !$tagname)  {
       $this->error_exit(
-        'インスタンスIDとタグ名のいずれかを指定してください。');
+        'インスタンスIDかタグ名のいずれかを指定してください。');
     }
     if ($instance_id && $tagname)  {
       $this->error_exit(

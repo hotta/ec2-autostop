@@ -14,7 +14,7 @@ class Ec2Start extends Ec2
    */
   protected $signature = 'ec2:start
     {--instanceid= : 開始するインスタンスのインスタンスID}
-    {--tagname=    : 開始するインスタンスのタグ名}';
+    {--tagname=    : 開始するインスタンスのタグ名（これらのいずれかを指定）}';
 
   /**
    * コンソールコマンドの説明
