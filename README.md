@@ -10,7 +10,7 @@ AWS のインスタンスの一覧表示や起動／停止を行う、Laravel �
 - 上記を利用した Laravel 開発環境の環境
   - https://github.com/hotta/laravel-centos7
   - php-7.x + nginx + php-fpm + laravel-5.2.x + php-sdk-php-laravel-3.0 になります。
-- 一個以上の AWS インスタンス
+- （表示／操作対象としての）一個以上の AWS インスタンス
 
 ## Quick start
 
