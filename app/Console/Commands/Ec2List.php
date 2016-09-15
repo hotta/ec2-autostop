@@ -5,43 +5,34 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use AWS;
 
-class Ec2List extends Command
+class Ec2List extends Ec2
 {
     /**
-     * The console command name.
+     * コンソールコマンドのシグニチャー（コマンド書式定義）
      *
      * @var string
      */
     protected $signature = 'ec2:list';
 
     /**
-     * The console command description.
+     * コンソールコマンドの説明
      *
      * @var string
      */
-    protected $description = 'Display list of Ec2 instances';
+    protected $description = 'EC2 インスタンスの一覧を表示します';
 
     /**
-     * The Ec2Client class instance.
-     *
-     * @var \Aws\Ec2\Ec2Client
-     */
-    protected $ec2client;
-
-    /**
-     * Display list of Ec2 instances
+     * コマンドインスタンスの生成
      *
      * @return void
      */
     public function __construct()
     {
         parent::__construct();
-
-        $this->ec2client = AWS::createClient('ec2');
     } //  Ec2List :: __construct()
 
     /**
-     * Display list of Ec2 instances
+     * コンソールコマンドの実行
      *
      * @return mixed
      */
@@ -71,6 +62,11 @@ Tag Name      Private IP    Status         Instance ID
       }
     } //  Ec2List :: handle()
 
+    /**
+     * sort 比較関数
+     *
+     * @return integer
+     */
     private function compare_func($a, $b)  {
       return strcmp($a['tagname'], $b['tagname']);
     } //  Ec2List :: compare_func()

@@ -1,6 +1,6 @@
 ## What is this?
 
-AWS のインスタンス一覧を表示する、Laravel コンソールアプリのサンプルです。
+AWS のインスタンスの一覧表示や起動／停止を行う、Laravel コンソールアプリのサンプルです。
 
 ## Prerequisite
 
@@ -22,6 +22,11 @@ $ cp -rp laravel-aws/app /path/to/LARAVEL_HOME
 $ vi /path/to/LARAVEL_HOME/.env
 （東京リージョン利用の場合、 AWS_REGION=ap-northeast-1 を追加）
 $ cd /path/to/LARAVEL_HOME
+$ php artisan | grep ec2
+ ec2
+  ec2:list            EC2 インスタンスの一覧を表示します
+  ec2:start           インスタンスを開始します
+  ec2:stop            インスタンスを停止します
 $ php artisan ec2:list
 （出力例）
 Tag Name      Private IP    Status         Instance ID
