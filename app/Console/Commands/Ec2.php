@@ -75,6 +75,13 @@ class Ec2 extends Command
       }'
     );
 //  dd($this->instanceInfo);
+    if ($this->instanceInfo == null)  {
+      if ($instance_id) {
+        $this->error_exit("インスタンスID $instance_id が見つかりません。");
+      } else  {
+        $this->error_exit("タグ名 $tagname が見つかりません。");
+      }
+    }
   } //  Ec2 :: getInstanceInfo()
 
   /**
