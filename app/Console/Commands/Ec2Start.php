@@ -14,7 +14,7 @@ class Ec2Start extends Ec2
    */
   protected $signature = 'ec2:start
     {--instanceid= : 開始するインスタンスのインスタンスID}
-    {--tagname=    : 開始するインスタンスのタグ名（これらのいずれかを指定）}';
+    {--nickname=   : 開始するインスタンスのニックネーム（これらのいずれかを指定）}';
 
   /**
    * コンソールコマンドの説明
@@ -40,9 +40,9 @@ class Ec2Start extends Ec2
    */
   public function handle()
   {
-    $this->getInstanceInfo();
-    $this->checkInstanceState();
-    $instance_id = $this->instanceInfo['instance_id'];
+    $info = $this->getInstanceInfo();
+    $this->checkInstanceState($info);
+    $instance_id = $info['instance_id'];
 
     $ret = $this->ec2client->startInstances([
       'InstanceIds' => [ $instance_id ]
@@ -57,10 +57,10 @@ class Ec2Start extends Ec2
    *
    * @return void
    */
-  public function checkInstanceState()
+  public function checkInstanceState($info)
   {
-    $id = $this->instanceInfo['instance_id'];
-    switch ($this->instanceInfo['state'])  {
+    $id = $info['instance_id'];
+    switch ($info['state'])  {
     case  'pending':
       $this->error_exit("$id は起動処理中です");
     case  'running':
