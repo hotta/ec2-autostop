@@ -13,8 +13,8 @@ class Ec2Stop extends Ec2
    * @var string
    */
   protected $signature = 'ec2:stop
-    {--instanceid= : 開始するインスタンスのインスタンスID}
-    {--tagname=    : 開始するインスタンスのタグ名}';
+  {--instanceid= : 停止するインスタンスのインスタンスID}
+  {--nickname=   : 停止するインスタンスのニックネーム（これらのいずれかを指定）}';
 
   /**
    * コンソールコマンドの説明
@@ -40,9 +40,9 @@ class Ec2Stop extends Ec2
    */
   public function handle()
   {
-    $this->getInstanceInfo();
-    $this->checkInstanceState();
-    $instance_id = $this->instanceInfo['instance_id'];
+    $info = $this->getInstanceInfo();
+    $this->checkInstanceState($info);
+    $instance_id = $info['instance_id'];
 
     $ret = $this->ec2client->stopInstances([
       'InstanceIds' => [ $instance_id ]
@@ -57,10 +57,10 @@ class Ec2Stop extends Ec2
    *
    * @return void
    */
-  public function checkInstanceState()
+  public function checkInstanceState($info)
   {
-    $id = $this->instanceInfo['instance_id'];
-    switch ($this->instanceInfo['state'])  {
+    $id = $info['instance_id'];
+    switch ($info['state'])  {
     case  'pending':
       $this->error_exit("$id は起動処理中です");
     case  'shutting-down':

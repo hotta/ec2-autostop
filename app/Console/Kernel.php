@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\Ec2List::class,
         Commands\Ec2Start::class,
         Commands\Ec2Stop::class,
+        Commands\Ec2Autostop::class,
     ];
 
     /**
