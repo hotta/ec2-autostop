@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use AWS;
+use App\Ec2Auto;
 
 class Ec2Start extends Ec2
 {
@@ -40,15 +41,13 @@ class Ec2Start extends Ec2
    */
   public function handle()
   {
-    $info = $this->getInstanceInfo();
+    $ec2 = new Ec2Auto;
+    $info = $this->getInstanceInfo($ec2);
     $this->checkInstanceState($info);
     $instance_id = $info['instance_id'];
-
-    $ret = $this->ec2client->startInstances([
-      'InstanceIds' => [ $instance_id ]
-    ]);
+    $ec2->start($instance_id);
     if ($this->option('verbose')) {
-      $this->info("$instance_id を起動しました。\n");
+      $this->info("$instance_id を起動しました。");
     }
   } //  Ec2Start :: handle()
 
@@ -62,15 +61,15 @@ class Ec2Start extends Ec2
     $id = $info['instance_id'];
     switch ($info['state'])  {
     case  'pending':
-      $this->error_exit("$id は起動処理中です");
+      dd("$id は起動処理中です");
     case  'running':
-      $this->error_exit("$id はすでに実行中です");
+      dd("$id はすでに実行中です");
     case  'shutting-down':
-      $this->error_exit("$id はシャットダウン中です");
+      dd("$id はシャットダウン中です");
     case  'terminated':
-      $this->error_exit("$id は削除済みです");
+      dd("$id は削除済みです");
     case  'stopping':
-      $this->error_exit("$id は停止処理中です");
+      dd("$id は停止処理中です");
     case  'stopped':
     default:
       break;
