@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use AWS;
+use App\Ec2Auto;
 
 class Ec2List extends Ec2
 {
@@ -38,7 +39,8 @@ class Ec2List extends Ec2
      */
     public function handle()
     {
-      $filtered = $this->getInstanceList();
+      $ec2 = new Ec2Auto;
+      $filtered = $ec2->getInstanceList();
       print "
 Nickname      Private IP    Status         Instance ID
 ------------------------------------------------------------
