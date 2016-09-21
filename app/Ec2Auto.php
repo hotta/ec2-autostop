@@ -116,34 +116,6 @@ class Ec2Auto
   } //  Ec2Auto :: getTerminables()
 
   /**
-   * 制御対象インスタンスの取得
-   *
-   * @return array
-   */
-  public function getInstanceInfo()
-  {
-    $instance_id = $this->option('instanceid');  //  コマンドラインより
-    $nickname = $this->option('nickname');
-    if (!$instance_id && !$nickname)  {
-      dd('インスタンスIDかタグ名のいずれかを指定してください。');
-    }
-    if ($instance_id && $nickname)  {
-      dd('インスタンスIDとタグ名は、いずれか１つを指定してください。');
-    }
-    if ($instance_id) {
-      if (! $entry = $this->getInstanceById($instance_id))  {
-        dd("インスタンスID $instance_id が見つかりません。");
-      }
-    } else  {
-      if (! $entry = $this->getInstanceByName($nickname))  {
-        dd("サーバー名 $nickname が見つかりません。");
-      }
-    }
-//  dd($entry);
-    return $entry;
-  } //  Ec2Auto :: getInstanceInfo()
-
-  /**
    * インスタンスの開始
    *
    * @return void
