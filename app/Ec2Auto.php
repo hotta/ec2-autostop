@@ -100,6 +100,24 @@ class Ec2Auto
   }
 
   /**
+   * インスタンス一覧の取得（フィルター後）
+   *
+   * @return void
+   */
+  public function getInstanceListFiltered()
+  {
+    for ($i=0; $i<count($this->instanceList); $i++) {
+      foreach (['nickname', 'description', 'terminable', 'stop_at',
+        'private_ip', 'state', 'instance_id'] as $key)  {
+        if (!isset($this->instanceList[$i][$key]))  {
+          $this->instanceList[$i][$key] = '';
+        }
+      }
+    }
+    return $this->instanceList;
+  }
+
+  /**
    * 停止可能インスタンス一覧の取得
    *
    * @return array
