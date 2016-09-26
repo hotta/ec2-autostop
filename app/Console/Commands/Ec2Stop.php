@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use AWS;
-use App\Ec2Auto;
+use App\Ec2AutoFactory;
 
 class Ec2Stop extends Ec2
 {
@@ -41,13 +40,14 @@ class Ec2Stop extends Ec2
    */
   public function handle()
   {
-    $ec2 = new Ec2Auto;
-    $info = $this->getInstanceInfo($ec2);
+    $info = $this->getInstanceInfo();
     $this->checkInstanceState($info);
+    $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
-    $ec2->stop($instance_id);
+    $this->ec2->stop($instance_id);
     if ($this->option('verbose')) {
-      $this->info("$instance_id を停止しました。");
+      $this->info(sprintf("%s(%s)を停止しました。", 
+        $nickname, $instance_id));
     }
   } //  Ec2Stop :: handle()
 
