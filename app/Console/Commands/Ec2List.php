@@ -3,8 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use AWS;
-use App\Ec2Auto;
+use App\Ec2AutoFactory;
 
 class Ec2List extends Ec2
 {
@@ -39,14 +38,14 @@ class Ec2List extends Ec2
      */
     public function handle()
     {
-      $ec2 = new Ec2Auto;
-      $filtered = $ec2->getInstanceList();
+      $ec2 = new Ec2AutoFactory;
+      $filtered = $ec2->all();
       print "
-Nickname      Private IP    Status         Instance ID
+Nickname      Private IP    Status             Instance ID
 ------------------------------------------------------------
 ";
       foreach ($filtered as $i => $e)  {
-        printf("%-14s%-14s%-11s%-20s\n",
+        printf("%-14s%-14s%-15s%-20s\n",
           $e['nickname'],
           $e['private_ip'],
           $e['state'],

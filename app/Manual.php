@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Manual extends Model
 {
-  protected $fillable = [ 't_date', 'instance_id', 'nickname' ];
+  /**
+   * モデルの日付カラムの保存フォーマット
+   *
+   * @var string
+   */
+  protected $dateFormat = 'Y-m-d';  //  yyyy-mm-dd
 }
