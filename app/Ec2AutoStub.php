@@ -17,15 +17,15 @@ class Ec2AutoStub
         'stop_at'     => '18:00',
         'private_ip'  => '172.16.1.8',
         'state'       => 'stopped',
-        'instance_id' => 'i-0987183029ef17d77'
+        'instance_id' => 'i-0987183xx9ef17d77'
       ], [
         'nickname'    => 'dev-web1',
-        'description' => '達人クラウド評価用',
+        'description' => 'テスト#2評価用',
         'terminable'  => 'true',
         'stop_at'     => '18:00',
         'private_ip'  => '172.16.0.8',
         'state'       => 'running',
-        'instance_id' => 'i-00c3eaeb04268a242'
+        'instance_id' => 'i-00c3eaeb0xxx8a242'
       ], [
         'nickname'    => 'dev-dummy1',
         'description' => 'ダミー（24h運用）',
@@ -33,7 +33,7 @@ class Ec2AutoStub
   //    'stop_at'     => '18:00',
         'private_ip'  => '172.16.0.8',
         'state'       => 'running',
-        'instance_id' => 'i-xxc3eaeb04268a242'
+        'instance_id' => 'i-xxc3eaeb0426xx242'
       ], [
         'nickname'    => 'dev-dummy2',
         'description' => 'ダミー#2',
