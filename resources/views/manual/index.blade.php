@@ -77,5 +77,5 @@
 @endforeach
 </tbody>
 </table>
-<p>※ rdgw と kanjo3 はペアで動かす必要があります。</p>
+<p>{{ env('GUI_REMARKS', '') }}</p>
 @endsection
