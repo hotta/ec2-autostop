@@ -67,7 +67,16 @@ class Ec2AutoProdProd
   } //  Ec2AutoProd :: getInstanceList()
 
   /**
-   * インスタンスの開始
+   * sort 比較関数
+   *
+   * @return integer
+   */
+  private function compare_func($a, $b)  {
+    return strcmp($a['nickname'], $b['nickname']);
+  } //  Ec2AutoProd :: compare_func()
+
+  /**
+   * インスタンスの起動
    *
    * @return void
    */
@@ -91,12 +100,15 @@ class Ec2AutoProdProd
   } //  Ec2AutoProd :: stop()
 
   /**
-   * sort 比較関数
+   * インスタンスの再起動
    *
-   * @return integer
+   * @return void
    */
-  private function compare_func($a, $b)  {
-    return strcmp($a['nickname'], $b['nickname']);
-  } //  Ec2AutoProd :: compare_func()
+  public function reboot($instance_id)
+  {
+    $ret = $this->ec2client->rebootInstances([
+      'InstanceIds' => [ $instance_id ]
+    ]);
+  } //  Ec2AutoProd :: reboot()
 
 } //  class Ec2AutoProd

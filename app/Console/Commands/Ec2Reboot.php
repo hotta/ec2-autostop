@@ -4,23 +4,23 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class Ec2Start extends Ec2
+class Ec2Reboot extends Ec2
 {
   /**
    * コンソールコマンドのシグニチャー（コマンド書式定義）
    *
    * @var string
    */
-  protected $signature = 'ec2:start
-    {--instanceid= : 起動するインスタンスのインスタンスID}
-    {--nickname=   : 起動するインスタンスのニックネーム（これらのいずれかを指定）}';
+  protected $signature = 'ec2:reboot
+    {--instanceid= : 開始するインスタンスのインスタンスID}
+    {--nickname=   : 開始するインスタンスのニックネーム（これらのいずれかを指定）}';
 
   /**
    * コンソールコマンドの説明
    *
    * @var string
    */
-  protected $description = 'インスタンスを起動します';
+  protected $description = 'インスタンスを再起動します';
 
   /**
    * コマンドインスタンスの生成
@@ -30,7 +30,7 @@ class Ec2Start extends Ec2
   public function __construct()
   {
       parent::__construct();
-  } //  Ec2Start :: __construct()
+  } //  Ec2Reboot :: __construct()
 
   /**
    * コンソールコマンドの実行
@@ -43,12 +43,12 @@ class Ec2Start extends Ec2
     $this->checkInstanceState($info);
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
-    $this->ec2->start($instance_id);
+    $this->ec2->reboot($instance_id);
     if ($this->option('verbose')) {
-      $this->info(sprintf("%s(%s)を起動しました。",
+      $this->info(sprintf("%s(%s)を再起動しました。",
         $nickname, $instance_id));
     }
-  } //  Ec2Start :: handle()
+  } //  Ec2Reboot :: handle()
 
   /**
    * インスタンス状態の整合チェック
@@ -61,8 +61,6 @@ class Ec2Start extends Ec2
     switch ($info['state'])  {
     case  'pending':
       dd("$id は起動処理中です");
-    case  'running':
-      dd("$id はすでに実行中です");
     case  'shutting-down':
       dd("$id はシャットダウン中です");
     case  'terminated':
@@ -70,9 +68,10 @@ class Ec2Start extends Ec2
     case  'stopping':
       dd("$id は停止処理中です");
     case  'stopped':
+    case  'running':
     default:
       break;
     }
-  } //  Ec2Start :: checkInstanceState()
+  } //  Ec2Reboot :: checkInstanceState()
 
-} //  class Ec2Start
+} //  class Ec2Reboot

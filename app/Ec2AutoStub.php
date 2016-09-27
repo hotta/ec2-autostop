@@ -80,13 +80,14 @@ class Ec2AutoStub
   } //  Ec2AutoStub :: all()
 
   /**
-   * インスタンスの開始
+   * インスタンスの起動
    *
    * @return void
    */
   public function start($instance_id)
   {
-    \Log::info(sprintf("%s::%s(%s) called.", __CLASS__, __METHOD__, $instance_id));
+    \Log::info(sprintf("%s::%s(%s) called.",
+      __CLASS__, __METHOD__, $instance_id));
   } //  Ec2AutoStub :: start()
 
   /**
@@ -96,7 +97,19 @@ class Ec2AutoStub
    */
   public function stop($instance_id)
   {
-    \Log::info(sprintf("%s::%s(%s) called.", __CLASS__, __METHOD__, $instance_id));
+    \Log::info(sprintf("%s::%s(%s) called.",
+      __CLASS__, __METHOD__, $instance_id));
   } //  Ec2AutoStub :: stop()
+
+  /**
+   * インスタンスの再起動
+   *
+   * @return void
+   */
+  public function reboot($instance_id)
+  {
+    \Log::info(sprintf("%s::%s(%s) called.",
+      __CLASS__, __METHOD__, $instance_id));
+  } //  Ec2AutoStub :: reboot()
 
 } //  class Ec2AutoStub

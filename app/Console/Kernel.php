@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Commands\Inspire::class,
         Commands\Ec2List::class,
+        Commands\Ec2Reboot::class,
         Commands\Ec2Start::class,
         Commands\Ec2Stop::class,
         Commands\Ec2Autostop::class,
