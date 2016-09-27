@@ -1,3 +1,12 @@
+h1  {
+  text-align:     center;
+  margin-bottom:  30px;
+}
+
+h5  {
+  text-align:     right;
+}
+
 table.custom-va {
   margin-bottom:  3px;
   color:          black;
@@ -22,5 +31,5 @@ th.server_status  {
   width:    25%;
 }
 th.server_stop  {
-  width:    25%;
+  width:    30%;
 }

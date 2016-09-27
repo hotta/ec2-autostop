@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="refresh" content="60">
   <title>@yield('title')</title>
 
 <!-- Latest compiled and minified CSS -->
