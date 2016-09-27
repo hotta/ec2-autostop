@@ -7,10 +7,10 @@
 <table class='table table-striped custom-va'>
 <thead>
   <tr>
-    <th>サーバー名</th>
-    <th>役割</th>
-    <th colspan="2">稼働状況</th>
-    <th colspan="2">本日の停止予定</th>
+    <th class="server_name">サーバー名</th>
+    <th class="server_role">役割</th>
+    <th class="server_status" colspan="2">稼働状況</th>
+    <th class="server_stop"   colspan="2">本日の停止予定</th>
   </tr>
 </thead>
 <tbody>
@@ -31,20 +31,22 @@
 {{-- 起動／停止ボタン --}}
   @if ($s['state'] == 'running')
     <td>
-      <form method="post" id="form_{{ $s['instance_id'] }}" class="form-group"
-        style="display:inline" action="/manual/stop/{{ $s['instance_id'] }}">
+      <form method="post" class="form-group" style="display:inline" 
+        id="stop_{{ $s['instance_id'] }}" 
+        action="/manual/stop/{{ $s['instance_id'] }}">
         {{ csrf_field() }}
-        <a href="#" data-id="{{ $s['instance_id'] }}" onclick="Stop_Run(this)"
-          class="btn btn-danger">停止</a>
+        <a href="#" data-id="{{ $s['instance_id'] }}" 
+          class="btn btn-danger" onclick="Stop_Run(this)">停止</a>
       </form>
     </td>
   @elseif ($s['state'] == 'stopped')
     <td>
-      <form method="post" id="form_{{ $s['instance_id'] }}" class="form-group"
-        style="display:inline" action="/manual/start/{{ $s['instance_id'] }}">
+      <form method="post" class="form-group" style="display:inline" 
+        id="start_{{ $s['instance_id'] }}" 
+        action="/manual/start/{{ $s['instance_id'] }}">
         {{ csrf_field() }}
-        <a href="#" data-id="{{ $s['instance_id'] }}" onclick="Start(this)"
-          class="btn btn-success">起動</a>
+        <a href="#" data-id="{{ $s['instance_id'] }}" 
+          class="btn btn-success" onclick="Start(this)">起動</a>
       </form>
     </td>
   @else
@@ -53,7 +55,7 @@
 
 {{-- 本日の停止予定 --}}
   @if ($s['stop_at'] == '')
-    <td></td>
+    <td>&nbsp;</td>
   @elseif ($s['stop_at'] == 'manual')
     <td>手動モード</td>
   @else
@@ -63,15 +65,16 @@
 {{-- ボタン --}}
   @if (preg_match('/^\d+:\d+$/', $s['stop_at']))
     <td>
-      <form method="post" id="form_{{ $s['instance_id'] }}" class="form-group"
-        style="display:inline" action="/manual/{{ $s['instance_id'] }}">
+      <form method="post" class="form-group" style="display:inline" 
+        id="manual_{{ $s['instance_id'] }}" 
+        action="/manual/to_manual/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <a href="#" data-id="{{ $s['instance_id'] }}" onclick="toManual(this)"
-          class="btn btn-warning">手動モードへ</a>
+        <a href="#" data-id="{{ $s['instance_id'] }}" 
+          class="btn btn-warning" onclick="toManual(this)">手動モードへ</a>
       </form>
     </td>
   @else
-    <td></td>
+    <td>&nbsp;</td>
   @endif
   </tr>
 @endforeach

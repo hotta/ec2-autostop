@@ -30,7 +30,7 @@ class Ec2AutoStub
         'nickname'    => 'dev-dummy1',
         'description' => 'ダミー（24h運用）',
         'terminable'  => 'false',
-  //    'stop_at'     => '18:00',
+        'stop_at'     => '18:00',
         'private_ip'  => '172.16.0.8',
         'state'       => 'running',
         'instance_id' => 'i-xxc3eaeb0426xx242'

@@ -36,6 +36,7 @@ class Ec2AutoFactory
     }
     $this->instanceList = $this->auto->all();
     $this->normalize();
+    $this->checkManuals();
     $this->set_state_j();
 //  dd($this->instanceList);
   } //  Ec2AutoFactory :: __construct()
@@ -166,6 +167,25 @@ class Ec2AutoFactory
     }
 //  dd($this->instanceList);
   } //  Ec2AutoFactory :: normalize()
+
+  /**
+   * レコードが存在したら手動モードへ
+   *
+   * @return void
+   */
+  private function checkManuals()
+  {
+    $manuals = Manual::where('t_date', date('Y-m-d'))
+                        ->get();              //  本日分レコード取得
+    foreach ($manuals as $manual) {
+      for ($i=0; $i<count($this->instanceList); $i++) {
+        if ($this->instanceList[$i]['instance_id'] == $manual->instance_id)  {
+          $this->instanceList[$i]['stop_at'] = 'manual';  //  手動モード
+          break;
+        }
+      }
+    }
+  } //  Ec2AutoFactory :: checkManuals()
 
   /**
    * インスタンスの起動
