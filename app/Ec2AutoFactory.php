@@ -168,7 +168,7 @@ class Ec2AutoFactory
   } //  Ec2AutoFactory :: normalize()
 
   /**
-   * インスタンスの開始
+   * インスタンスの起動
    *
    * @return void
    */
@@ -186,5 +186,15 @@ class Ec2AutoFactory
   {
     $this->auto->stop($instance_id);
   } //  Ec2AutoFactory :: stop()
+
+  /**
+   * インスタンスの再起動
+   *
+   * @return void
+   */
+  public function reboot($instance_id)
+  {
+    $this->auto->reboot($instance_id);
+  } //  Ec2AutoFactory :: reboot()
 
 } //  class Ec2AutoFactory
