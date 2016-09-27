@@ -17,6 +17,7 @@ class CreateManualsTable extends Migration
             $table->date('t_date');         //  対象日付
             $table->text('instance_id');    //  インスタンスID
             $table->text('nickname');       //  サーバーのニックネーム
+            $table->timestamps();           //  レコードのタイムスタンプ
 
             $table->index('t_date', 'instance_id'); //  複合インデックス
         });
