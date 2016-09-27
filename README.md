@@ -40,7 +40,7 @@ dev-dummy1    172.16.0.8    running        i-xxc3eaeb0426xx242
 
 ## Screenshot
 
-![Screenshot](https://github.com/hotta/laravel-aws/public/img/screenshot.png)
+![Screenshot](https://github.com/hotta/laravel-aws/tree/master/public/img/screenshot.png)
 
 ## AWS 認証情報（実環境で利用する場合）
 
