@@ -1,6 +1,6 @@
 ## What is this?
 
-AWS のインスタンスの一覧表示や起動／停止を行う、Laravel コンソールアプリのサンプルです。
+AWS のインスタンスの一覧表示や起動／停止を行う、Laravel アプリのサンプルです。
 
 ## Prerequisite
 
@@ -11,6 +11,7 @@ AWS のインスタンスの一覧表示や起動／停止を行う、Laravel �
   - https://github.com/hotta/laravel-centos7
   - php-7.x + nginx + php-fpm + laravel-5.2.x + php-sdk-php-laravel-3.0 になります。
 - （表示／操作対象としての）一個以上の AWS インスタンス
+  - → スタブを実装したのでなくても実行可能
 
 ## Quick start
 
@@ -25,19 +26,23 @@ $ cd /path/to/LARAVEL_HOME
 $ php artisan | grep ec2
  ec2
   ec2:list            EC2 インスタンスの一覧を表示します
-  ec2:start           インスタンスを開始します
+  ec2:reboot          インスタンスを再起動します
+  ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
 $ php artisan ec2:list
-（出力例）
-Tag Name      Private IP    Status         Instance ID
+（スタブ利用時の出力例）
+Nickname      Private IP    Status             Instance ID
 ------------------------------------------------------------
-dev-ad        172.16.1.9    stopped    i-0XXXXXXXXXXXXXXe3
-dev-comgw     172.16.1.12   stopped    i-0XXXXXXXXXXXXXX22
-dev-comsh     172.16.1.10   stopped    i-0XXXXXXXXXXXXXX96
-
+dev-test1     172.16.1.8    stopped        i-0987183xx9ef17d77
+dev-web1      172.16.0.8    running        i-00c3eaeb0xxx8a242
+dev-dummy1    172.16.0.8    running        i-xxc3eaeb0426xx242
 ```
 
-## AWS 認証情報
+## Screenshot
+
+![Screenshot](https://github.com/hotta/laravel-aws/public/img/screenshot.png)
+
+## AWS 認証情報（実環境で利用する場合）
 
 AWS への API リクエスト権限のない（AMI ロールを付与されていない）ホストから実行する場合は、 [~/.aws/credentials](http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#credential-profiles) を設定してください。
 
