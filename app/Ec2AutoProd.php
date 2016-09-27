@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Support;
 use AWS;
 
-class Ec2AutoProdProd
+class Ec2AutoProd
 {
   /**
    * Ec2Client クラスのインスタンス
@@ -52,18 +52,18 @@ class Ec2AutoProdProd
   private function getInstanceList()
   {
     $di = $this->ec2client->DescribeInstances();
-    $instanceList = $di->search(
+    $this->instanceList = $di->search(
       'Reservations[*].Instances[].{
         nickname:     Tags[*] | [?Key==`Name`].Value | [0],
         description:  Tags[*] | [?Key==`Description`].Value | [0],
         terminable:   Tags[*] | [?Key==`Terminable`].Value | [0],
-        stop_at:      Tags[*] | [?Key==`at`].Value | [0],
+        stop_at:      Tags[*] | [?Key==`Stop_at`].Value | [0],
         private_ip:   NetworkInterfaces[0].PrivateIpAddress,
         state:        State.Name,
         instance_id:  InstanceId
       }'
     );
-    usort($instanceList, 'self::compare_func');
+    usort($this->instanceList, 'self::compare_func');
   } //  Ec2AutoProd :: getInstanceList()
 
   /**

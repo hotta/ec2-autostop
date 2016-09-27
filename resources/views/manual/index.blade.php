@@ -4,6 +4,7 @@
 
 @section('content')
 <h1>サーバー起動／停止制御</h1>
+<h5>{{ $timestamp}} 現在</h5>
 <table class='table table-striped custom-va'>
 <thead>
   <tr>
@@ -33,7 +34,7 @@
     <td>
       <form method="post" class="form-group" style="display:inline" 
         id="stop_{{ $s['instance_id'] }}" 
-        action="/manual/stop/{{ $s['instance_id'] }}">
+        action="/manual/stop/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
         <a href="#" data-id="{{ $s['instance_id'] }}" 
           class="btn btn-danger" onclick="Stop_Run(this)">停止</a>
@@ -43,7 +44,7 @@
     <td>
       <form method="post" class="form-group" style="display:inline" 
         id="start_{{ $s['instance_id'] }}" 
-        action="/manual/start/{{ $s['instance_id'] }}">
+        action="/manual/start/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
         <a href="#" data-id="{{ $s['instance_id'] }}" 
           class="btn btn-success" onclick="Start(this)">起動</a>

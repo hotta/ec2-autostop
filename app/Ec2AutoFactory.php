@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Support;
+use App\Ec2AutoStub;
+use App\Ec2AutoProd;
 
 class Ec2AutoFactory
 {
@@ -145,20 +147,21 @@ class Ec2AutoFactory
     for ($i=0; $i<count($this->instanceList); $i++)  {
       foreach ([ 
         'nickname',     //  タグ名
-        'terminable',   //  タグ名
         'state',        //  AWS API 戻り値
-        'instance_id'   //  AWS API 戻り値
+        'instance_id',  //  AWS API 戻り値
+        'private_ip'    //  AWS API 戻り値
       ] as $key)  {
         if (!isset($this->instanceList[$i][$key])) {
-          \Log::error(sprintf("%s::%s() called. '%s' not set.",
-            __CLASS__, __METHOD__, $key));    //  必須パラメーター
-          abort(503);
+          \Log::error(sprintf("%s::%s() called. '%s' for '%s' not set.",
+            __CLASS__, __METHOD__, studly_case($key), 
+            $this->instanceList[$i]['nickname']));
+          abort(503);  //  必須パラメーター
         }
       }
       foreach ([
         'description',  //  タグ名
         'stop_at',      //  タグ名
-        'private_ip'    //  AWS API 戻り値
+        'terminable',   //  タグ名
       ] as $key)  {
         if (!isset($this->instanceList[$i][$key])) {
           $this->instanceList[$i][$key] = ''; //  任意パラメーター
