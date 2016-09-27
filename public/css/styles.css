@@ -1,0 +1,26 @@
+table.custom-va {
+  margin-bottom:  3px;
+  color:          black;
+}
+
+table.custom-va > tbody > tr > td {
+  vertical-align: middle;
+  height:         51px;
+}
+
+.flash_message  {
+  text-align:     center;
+}
+
+th.server_name  {
+  width:    15%;
+}
+th.server_role  {
+  width:    30%;
+}
+th.server_status  {
+  width:    25%;
+}
+th.server_stop  {
+  width:    25%;
+}
