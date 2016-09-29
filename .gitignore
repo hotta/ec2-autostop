@@ -5,8 +5,12 @@
 app/Console/Commands/Inspire.php
 app/Events/
 app/Exceptions/
-app/Http/*
-!app/Http/routes.php
+app/Http/Controllers/*
+!app/Http/Controllers/ManualsController.php
+app/Http/Kernel.php
+app/Http/Middleware/
+app/Http/Requests/*
+!app/Http/Requests/ManualRequest.php
 app/Jobs/
 app/Listeners/
 app/Policies/
