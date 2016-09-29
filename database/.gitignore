@@ -1,0 +1,5 @@
+*.sqlite
+factories/
+migrations/*
+!migrations/2016_09_16_134725_create_manuals_table.php
+seeds/*
