@@ -12,7 +12,7 @@
 */
 
 Route::get('/', 'ManualsController@index');
-//  Route::get('/', function () { return view('welcome'); }); //  後勝ち
+Route::get('/', function () { return view('welcome'); }); //  後勝ち
 Route::post('/manual/start/{instance_id}/{nickname}',
   'ManualsController@start');
 Route::post('/manual/stop/{instance_id}/{nickname}', 

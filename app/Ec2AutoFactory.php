@@ -32,9 +32,9 @@ class Ec2AutoFactory
   public function __construct()
   {
     if (env('AWS_EC2_STUB')) {
-      $this->auto = new Ec2AutoStub;
+      $this->auto = new Ec2AutoStub;    //  モデルでシミュレート
     } else  {
-      $this->auto = new Ec2AutoProd;
+      $this->auto = new Ec2AutoProd;    //  AWS API をコール
     }
     $this->instanceList = $this->auto->all();
     $this->normalize();
@@ -172,7 +172,7 @@ class Ec2AutoFactory
   } //  Ec2AutoFactory :: normalize()
 
   /**
-   * レコードが存在したら手動モードへ
+   * レコードが存在したら手動モードに変更
    *
    * @return void
    */
@@ -193,31 +193,31 @@ class Ec2AutoFactory
   /**
    * インスタンスの起動
    *
-   * @return void
+   * @return bool
    */
   public function start($instance_id)
   {
-    $this->auto->start($instance_id);
+    return $this->auto->start($instance_id);
   } //  Ec2AutoFactory :: start()
 
   /**
    * インスタンスの停止
    *
-   * @return void
+   * @return bool
    */
   public function stop($instance_id)
   {
-    $this->auto->stop($instance_id);
+    return  $this->auto->stop($instance_id);
   } //  Ec2AutoFactory :: stop()
 
   /**
    * インスタンスの再起動
    *
-   * @return void
+   * @return bool
    */
   public function reboot($instance_id)
   {
-    $this->auto->reboot($instance_id);
+    return $this->auto->reboot($instance_id);
   } //  Ec2AutoFactory :: reboot()
 
 } //  class Ec2AutoFactory
