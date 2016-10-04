@@ -3,71 +3,26 @@
 namespace App;
 
 use Illuminate\Support;
+use App\FakeEc2;
 
 class Ec2AutoStub
 {
   /**
-   * スタブデータ
+   * スタブモデルのインスタンス
+   *
+   * @return bool
    */
-  const STUB = [
-      [
-        'nickname'    => 'dev-test1',
-        'description' => 'テスト#test1',
-        'terminable'  => 'true',
-        'stop_at'     => '18:00',
-        'private_ip'  => '172.16.1.8',
-        'state'       => 'stopped',
-        'instance_id' => 'i-0987183xx9ef17d77'
-      ], [
-        'nickname'    => 'dev-web1',
-        'description' => 'テスト#2評価用',
-        'terminable'  => 'true',
-        'stop_at'     => '18:00',
-        'private_ip'  => '172.16.0.8',
-        'state'       => 'running',
-        'instance_id' => 'i-00c3eaeb0xxx8a242'
-      ], [
-        'nickname'    => 'dev-dummy1',
-        'description' => 'ダミー（24h運用）',
-        'terminable'  => 'false',
-        'stop_at'     => '18:00',
-        'private_ip'  => '172.16.0.8',
-        'state'       => 'running',
-        'instance_id' => 'i-xxc3eaeb0426xx242'
-      ], [
-        'nickname'    => 'dev-dummy2',
-        'description' => 'ダミー#2',
-        'terminable'  => 'true',
-        'stop_at'     => '12:00',
-        'private_ip'  => '172.16.0.99',
-        'state'       => 'pending',
-        'instance_id' => 'i-00xxeaeb042XXa242'
-      ], [
-        'nickname'    => 'dev-dummy3',
-        'description' => 'ダミー#3',
-        'terminable'  => 'true',
-        'stop_at'     => '12:00',
-        'private_ip'  => '172.16.0.99',
-        'state'       => 'stopping',
-        'instance_id' => 'i-00c3xxeb042XXa242'
-      ], [
-        'nickname'    => 'dev-dummy4',
-        'description' => 'ダミー#4',
-        'terminable'  => 'true',
-        'stop_at'     => '12:00',
-        'private_ip'  => '172.16.0.99',
-        'state'       => 'shutting-down',
-        'instance_id' => 'i-00c3eaxx042XXa242'
-      ], [
-        'nickname'    => 'dev-dummy5',
-        'description' => 'ダミー#5',
-        'terminable'  => 'true',
-        'stop_at'     => '12:00',
-        'private_ip'  => '172.16.0.99',
-        'state'       => 'terminated',
-        'instance_id' => 'i-00c3eaeb042XXa242'
-      ],
-    ];
+  private $ec2;
+
+  /**
+   * コンストラクタ
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    $this->ec2 = new FakeEc2;
+  } //  Ec2AutoStub :: __construct()
 
   /**
    * レコード一覧の取得（標準モデル関数）
@@ -76,40 +31,58 @@ class Ec2AutoStub
    */
   public function all()
   {
-    return  self::STUB;
+    return $this->ec2->all();
   } //  Ec2AutoStub :: all()
 
   /**
    * インスタンスの起動
    *
-   * @return void
+   * @return bool
    */
   public function start($instance_id)
   {
     \Log::info(sprintf("%s::%s(%s) called.",
       __CLASS__, __METHOD__, $instance_id));
+    if (!$this->ec2->find($instance_id))  {
+      return false;
+    }
+    $this->ec2->state = 'pending';        //  起動処理中
+    $this->ec2->save();
+    return  true;
   } //  Ec2AutoStub :: start()
 
   /**
    * インスタンスの停止
    *
-   * @return void
+   * @return bool
    */
   public function stop($instance_id)
   {
     \Log::info(sprintf("%s::%s(%s) called.",
       __CLASS__, __METHOD__, $instance_id));
+    if (!$this->ec2->find($instance_id))  {
+      return false;
+    }
+    $this->ec2->state = 'stopping';       //  停止処理中
+    $this->ec2->save();
+    return  true;
   } //  Ec2AutoStub :: stop()
 
   /**
    * インスタンスの再起動
    *
-   * @return void
+   * @return bool
    */
   public function reboot($instance_id)
   {
     \Log::info(sprintf("%s::%s(%s) called.",
       __CLASS__, __METHOD__, $instance_id));
+    if (!$this->ec2->find($instance_id))  {
+      return false;
+    }
+    $this->ec2->state = 'rebooting';      //  再起動中
+    $this->ec2->save();
+    return  true;
   } //  Ec2AutoStub :: reboot()
 
 } //  class Ec2AutoStub

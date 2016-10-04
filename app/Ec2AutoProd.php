@@ -78,37 +78,40 @@ class Ec2AutoProd
   /**
    * インスタンスの起動
    *
-   * @return void
+   * @return bool
    */
   public function start($instance_id)
   {
     $ret = $this->ec2client->startInstances([
       'InstanceIds' => [ $instance_id ]
     ]);
+    return true;
   } //  Ec2AutoProd :: start()
 
   /**
    * インスタンスの停止
    *
-   * @return void
+   * @return bool
    */
   public function stop($instance_id)
   {
     $ret = $this->ec2client->stopInstances([
       'InstanceIds' => [ $instance_id ]
     ]);
+    return true;
   } //  Ec2AutoProd :: stop()
 
   /**
    * インスタンスの再起動
    *
-   * @return void
+   * @return bool
    */
   public function reboot($instance_id)
   {
     $ret = $this->ec2client->rebootInstances([
       'InstanceIds' => [ $instance_id ]
     ]);
+    return true;
   } //  Ec2AutoProd :: reboot()
 
 } //  class Ec2AutoProd
