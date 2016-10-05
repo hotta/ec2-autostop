@@ -7,14 +7,14 @@ app/Events/
 app/Exceptions/
 app/Http/Controllers/*
 !app/Http/Controllers/ManualsController.php
-app/Http/Kernel.php
 app/Http/Middleware/
 app/Http/Requests/*
 !app/Http/Requests/ManualRequest.php
 app/Jobs/
 app/Listeners/
 app/Policies/
-app/Providers/
+app/Providers/*
+!app/Providers/AppServiceProvider.php
 app/User.php
 artisan
 bootstrap/
