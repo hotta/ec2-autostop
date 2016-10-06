@@ -1,7 +1,0 @@
-*.sqlite
-factories/
-migrations/*
-!migrations/2016_09_16_134725_create_manuals_table.php
-!migrations/2016_10_04_103625_create_fake_ec2_table.php
-seeds/*
-!seeds/FakeEc2TableSeeder.php
