@@ -13,7 +13,7 @@ app/Http/Controllers/*
 app/Http/Requests/*
 !app/Http/Requests/ManualRequest.php
 !app/Http/routes.php
-!app/Jobs/*
+app/Jobs/*
 !app/Jobs/Ec2*
 app/Listeners/
 app/Policies/
