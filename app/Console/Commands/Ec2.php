@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Ec2AutoFactory;
+use InvalidArgumentException;
 
 class Ec2 extends Command
 {
@@ -28,6 +29,8 @@ class Ec2 extends Command
   /**
    * 制御対象インスタンスの取得
    *
+   * @throws InvalidArgumentException インスタンス指定がない場合
+   *
    * @return array
    */
   public function getInstanceInfo()
@@ -35,18 +38,22 @@ class Ec2 extends Command
     $instance_id = $this->option('instanceid');  //  コマンドラインより
     $nickname = $this->option('nickname');
     if (!$instance_id && !$nickname)  {
-      dd('インスタンスIDかタグ名のいずれかを指定してください。');
+      throw new InvalidArgumentException
+        ('インスタンスIDかタグ名のいずれかを指定してください。');
     }
     if ($instance_id && $nickname)  {
-      dd('インスタンスIDとタグ名は、いずれか１つを指定してください。');
+      throw new InvalidArgumentException
+        ('インスタンスIDとタグ名は、いずれか１つを指定してください。');
     }
     if ($instance_id) {
       if (! $entry = $this->ec2->findByInstanceId($instance_id))  {
-        dd("インスタンスID $instance_id が見つかりません。");
+        throw new InvalidArgumentException
+          ("インスタンスID $instance_id が見つかりません。");
       }
     } else  {
       if (! $entry = $this->ec2->findByNickname($nickname))  {
-        dd("サーバー名 $nickname が見つかりません。");
+        throw new InvalidArgumentException
+          ("サーバー名 $nickname が見つかりません。");
       }
     }
 //  dd($entry);
