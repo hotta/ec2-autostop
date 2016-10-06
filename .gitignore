@@ -2,12 +2,11 @@
 *.orig
 *.swp
 .gitattributes
-app/*
 app/Console/*
 app/Console/Commands/*
 !app/Console/Commands/Ec2*
-!app/Ec2*
-!app/FakeEc2*
+app/Events/
+app/Exceptions/
 app/Http/*
 app/Http/Controllers/*
 !app/Http/Controllers/ManualsController.php
@@ -16,9 +15,11 @@ app/Http/Requests/*
 !app/Http/routes.php
 !app/Jobs/*
 !app/Jobs/Ec2*
-!app/Manual.php
+app/Listeners/
+app/Policies/
 app/Providers/*
 !app/Providers/Ec2ServiceProvider.php
+app/User.php
 artisan
 bootstrap/
 !composer.json
