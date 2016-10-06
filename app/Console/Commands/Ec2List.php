@@ -39,18 +39,18 @@ class Ec2List extends Ec2
     public function handle()
     {
       $ec2 = new Ec2AutoFactory;
+      $headers = [ 'Nickname', 'Private IP', 'Status', 'Instance ID' ];
       $filtered = $ec2->all();
-      print "
-Nickname      Private IP    Status             Instance ID
-------------------------------------------------------------
-";
+      $instances = [];
+      $i = 0;
       foreach ($filtered as $i => $e)  {
-        printf("%-14s%-14s%-15s%-20s\n",
-          $e['nickname'],
-          $e['private_ip'],
-          $e['state'],
-          $e['instance_id']);
+        $instances[$i]['nickname']    = $e['nickname'];
+        $instances[$i]['private_ip']  = $e['private_ip'];
+        $instances[$i]['state']       = $e['state'];
+        $instances[$i]['instance_id'] = $e['instance_id'];
+        $i++;
       }
+      $this->table($headers, $instances);
     } //  Ec2List :: handle()
 
 } //  class Ec2List

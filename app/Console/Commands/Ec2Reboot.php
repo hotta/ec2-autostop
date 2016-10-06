@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use RuntimeException;
 
 class Ec2Reboot extends Ec2
 {
@@ -53,24 +54,34 @@ class Ec2Reboot extends Ec2
   /**
    * インスタンス状態の整合チェック
    *
+   * @throws RuntimeException 指示がインスタンスの状態と合わない場合
+   *
    * @return void
    */
   public function checkInstanceState($info)
   {
     $id = $info['instance_id'];
+    $error = null;
     switch ($info['state'])  {
     case  'pending':
-      dd("$id は起動処理中です");
+      $error = "インスタンス $id は起動処理中です";
+      break;
     case  'shutting-down':
-      dd("$id はシャットダウン中です");
+      $error = "インスタンス $id はシャットダウン中です";
+      break;
     case  'terminated':
-      dd("$id は削除済みです");
+      $error = "インスタンス $id は削除済みです";
+      break;
     case  'stopping':
-      dd("$id は停止処理中です");
+      $error = "インスタンス $id は停止処理中です";
+      break;
     case  'stopped':
     case  'running':
     default:
       break;
+    }
+    if ($error) {
+      throw new RuntimeException($error);
     }
   } //  Ec2Reboot :: checkInstanceState()
 
