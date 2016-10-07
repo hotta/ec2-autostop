@@ -37,6 +37,8 @@ phpunit.xml
 public/*
 !public/css/
 !public/js/
+nbproject/
+readme.md
 resources/*
 !resources/layouts/
 !resources/manual/
@@ -45,3 +47,4 @@ storage/
 tests/*
 !tests/ArtisanTest.php
 vendor/
+/nbproject/private/
