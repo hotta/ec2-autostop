@@ -3,10 +3,10 @@
 namespace App;
 
 use Illuminate\Support;
-use App\Ec2AutoStub;
-use App\Ec2AutoProd;
+use App\FakeEc2;
+use App\Ec2Ctrl;
 
-class Ec2AutoFactory
+class Ec2Factory
 {
   /**
    * 実クラスのインスタンス
@@ -32,16 +32,16 @@ class Ec2AutoFactory
   public function __construct()
   {
     if (env('AWS_EC2_STUB')) {
-      $this->auto = new Ec2AutoStub;    //  モデルでシミュレート
+      $this->auto = new FakeEc2;    //  モデルでシミュレート
     } else  {
-      $this->auto = new Ec2AutoProd;    //  AWS API をコール
+      $this->auto = new Ec2Ctrl;    //  AWS API をコール
     }
-    $this->instanceList = $this->auto->all();
+    $this->instanceList = $this->auto->orderBy('nickname')->get();
     $this->normalize();
     $this->checkManuals();
     $this->set_state_j();
 //  dd($this->instanceList);
-  } //  Ec2AutoFactory :: __construct()
+  } //  Ec2Factory :: __construct()
 
   /**
    * レコード一覧の取得（標準モデル関数）
@@ -51,7 +51,7 @@ class Ec2AutoFactory
   public function all()
   {
     return $this->instanceList;
-  } //  Ec2AutoFactory :: all()
+  } //  Ec2Factory :: all()
 
   /**
    * 停止可能インスタンス一覧の取得
@@ -67,7 +67,7 @@ class Ec2AutoFactory
       }
     }
     return $ret;
-  } //  Ec2AutoFactory :: getTerminables()
+  } //  Ec2Factory :: getTerminables()
 
   /**
    * インスタンスIDによる対象インスタンスの取得
@@ -83,7 +83,7 @@ class Ec2AutoFactory
       }
     }
     return null; //  No such instance
-  } //  Ec2AutoFactory :: findByInstanceId()
+  } //  Ec2Factory :: findByInstanceId()
 
   /**
    * タグ名による対象インスタンスの取得
@@ -99,7 +99,7 @@ class Ec2AutoFactory
       }
     }
     return null; //  No such name
-  } //  Ec2AutoFactory :: findByNickname()
+  } //  Ec2Factory :: findByNickname()
 
   /**
    * 表示用日本語ステータスのセット
@@ -136,7 +136,7 @@ class Ec2AutoFactory
         break;
       }
     }
-  } //  Ec2AutoFactory :: set_state_j()
+  } //  Ec2Factory :: set_state_j()
 
   /**
    * 属性データの正規化
@@ -169,7 +169,7 @@ class Ec2AutoFactory
       }
     }
 //  dd($this->instanceList);
-  } //  Ec2AutoFactory :: normalize()
+  } //  Ec2Factory :: normalize()
 
   /**
    * レコードが存在したら手動モードに変更
@@ -188,7 +188,7 @@ class Ec2AutoFactory
         }
       }
     }
-  } //  Ec2AutoFactory :: checkManuals()
+  } //  Ec2Factory :: checkManuals()
 
   /**
    * インスタンスの起動
@@ -198,7 +198,7 @@ class Ec2AutoFactory
   public function start($instance_id)
   {
     return $this->auto->start($instance_id);
-  } //  Ec2AutoFactory :: start()
+  } //  Ec2Factory :: start()
 
   /**
    * インスタンスの停止
@@ -208,7 +208,7 @@ class Ec2AutoFactory
   public function stop($instance_id)
   {
     return  $this->auto->stop($instance_id);
-  } //  Ec2AutoFactory :: stop()
+  } //  Ec2Factory :: stop()
 
   /**
    * インスタンスの再起動
@@ -218,6 +218,29 @@ class Ec2AutoFactory
   public function reboot($instance_id)
   {
     return $this->auto->reboot($instance_id);
-  } //  Ec2AutoFactory :: reboot()
+  } //  Ec2Factory :: reboot()
 
-} //  class Ec2AutoFactory
+  /**
+   * Add an "order by" clause to the query.
+   *
+   * @param  string  $column
+   * @param  string  $direction
+   * @return Illuminate\Database\Query\Builder
+   */
+  public function orderBy($column, $direction = 'asc')
+  {
+    return $this->auto->orderBy($column, $direction);
+  } //  Ec2Factory :: orderBy()
+
+  /**
+   * Execute the query as a "select" statement.
+   *
+   * @param  array  $columns
+   * @return array|static[]
+   */
+  public function get($columns = ['*'])
+  {
+    return $this->auto->get($columns);
+  }
+
+} //  class Ec2Factory

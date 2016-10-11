@@ -6,6 +6,7 @@ class FakeEc2TableSeeder extends Seeder
 {
     /**
      * データベース初期値設定実行
+     * php artisan db:seed または tests からの $this->seed() で呼ばれる
      *
      * @return void
      */

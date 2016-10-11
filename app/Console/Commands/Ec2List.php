@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Ec2AutoFactory;
+use App\Ec2Factory;
 
 class Ec2List extends Ec2
 {
@@ -38,9 +38,9 @@ class Ec2List extends Ec2
      */
     public function handle()
     {
-      $ec2 = new Ec2AutoFactory;
+      $ec2 = new Ec2Factory;
       $headers = [ 'Nickname', 'Private IP', 'Status', 'Instance ID' ];
-      $filtered = $ec2->all();
+      $filtered = $ec2->orderBy('nickname')->get();
       $instances = [];
       $i = 0;
       foreach ($filtered as $i => $e)  {

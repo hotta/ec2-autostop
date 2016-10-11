@@ -1,11 +1,13 @@
 <?php
-
+//
+//  実際に AWS API の呼び出しを行う
+//
 namespace App;
 
 use Illuminate\Support;
 use AWS;
 
-class Ec2AutoProd
+class Ec2Ctrl
 {
   /**
    * Ec2Client クラスのインスタンス
@@ -32,17 +34,28 @@ class Ec2AutoProd
   {
     $this->ec2client = AWS::createClient('ec2');
     $this->getInstanceList();
-  } //  Ec2AutoProd :: __construct()
+  } //  Ec2Ctrl :: __construct()
 
   /**
    * レコード一覧の取得（標準モデル関数）
    *
    * @return array
    */
-  public function all()
+  public function orderBy()
+  {
+    usort($this->instanceList, 'self::compare_func');
+    return $this;
+  } //  Ec2Ctrl :: all()
+
+  /**
+   * レコード一覧の取得（標準モデル関数）
+   *
+   * @return array
+   */
+  public function get()
   {
     return $this->instanceList;
-  } //  Ec2AutoFactory :: all()
+  } //  Ec2Ctrl :: all()
 
   /**
    * インスタンス一覧の取得
@@ -63,8 +76,7 @@ class Ec2AutoProd
         instance_id:  InstanceId
       }'
     );
-    usort($this->instanceList, 'self::compare_func');
-  } //  Ec2AutoProd :: getInstanceList()
+  } //  Ec2Ctrl :: getInstanceList()
 
   /**
    * sort 比較関数
@@ -73,20 +85,18 @@ class Ec2AutoProd
    */
   private function compare_func($a, $b)  {
     return strcmp($a['nickname'], $b['nickname']);
-  } //  Ec2AutoProd :: compare_func()
+  } //  Ec2Ctrl :: compare_func()
 
   /**
    * インスタンスの起動
    *
-   * @return bool
+   * @return void
    */
   public function start($instance_id)
   {
-    $ret = $this->ec2client->startInstances([
-      'InstanceIds' => [ $instance_id ]
-    ]);
-    return true;
-  } //  Ec2AutoProd :: start()
+    \Log::info(__CLASS__.'::'.__METHOD__.'('.$instance_id.') called.');
+    $this->ec2client->startInstances([ 'InstanceIds' => [ $instance_id ] ]);
+  } //  Ec2Ctrl :: start()
 
   /**
    * インスタンスの停止
@@ -95,11 +105,9 @@ class Ec2AutoProd
    */
   public function stop($instance_id)
   {
-    $ret = $this->ec2client->stopInstances([
-      'InstanceIds' => [ $instance_id ]
-    ]);
-    return true;
-  } //  Ec2AutoProd :: stop()
+    \Log::info(__CLASS__.'::'.__METHOD__.'('.$instance_id.') called.');
+    $this->ec2client->stopInstances([ 'InstanceIds' => [ $instance_id ] ]);
+  } //  Ec2Ctrl :: stop()
 
   /**
    * インスタンスの再起動
@@ -108,10 +116,8 @@ class Ec2AutoProd
    */
   public function reboot($instance_id)
   {
-    $ret = $this->ec2client->rebootInstances([
-      'InstanceIds' => [ $instance_id ]
-    ]);
-    return true;
-  } //  Ec2AutoProd :: reboot()
+    \Log::info(__CLASS__.'::'.__METHOD__.'('.$instance_id.') called.');
+    $this->ec2client->rebootInstances([ 'InstanceIds' => [ $instance_id ] ]);
+  } //  Ec2Ctrl :: reboot()
 
-} //  class Ec2AutoProd
+} //  class Ec2Ctrl

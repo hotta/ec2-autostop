@@ -3,27 +3,27 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Ec2AutoFactory;
+use App\Ec2Factory;
 use InvalidArgumentException;
 
 class Ec2 extends Command
 {
   /**
-   * Ec2AutoFactory クラスのインスタンス
+   * Ec2Factory クラスのインスタンス
    *
-   * @var \App\Ec2AutoFactory
+   * @var \App\Ec2Factory
    */
   protected $ec2;
 
   /**
    * コマンドインスタンスの生成
    *
-   * @return Ec2AutoFactory
+   * @return Ec2Factory
    */
   public function __construct()
   {
       parent::__construct();
-      $this->ec2 = new Ec2AutoFactory;
+      $this->ec2 = new Ec2Factory;
   } //  Ec2 :: __construct()
 
   /**
