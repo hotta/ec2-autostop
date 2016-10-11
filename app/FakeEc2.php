@@ -16,6 +16,39 @@ class FakeEc2 extends Model
   public $incrementing = false;           //  主キーは自動増分?
   public $timestamps = false;             //  自動更新のタイムスタンプ項目あり
 
+  public function changeState($instance_id, $state = 'unKnown')
+  {
+    $ec2 = $this->find($instance_id);
+    if (!$ec2)  {
+      throw new RuntimeException('インスタンスが未登録');
+    }
+    $ec2->attributes['state'] = $state;
+    $ec2->save();
+  } //  FakeEc2 :: changeState()
+
+  /**
+   * クエリーに "order by" 句を追加する
+   *
+   * @param  string  $column
+   * @param  string  $direction
+   * @return Illuminate\Database\Query\Builder
+   */
+  public function orderBy($column, $direction = 'asc')
+  {
+    return parent::orderBy($column, $direction);
+  } //  FakeEc2 :: orderBy()
+
+  /**
+   * "select" ステートメントとしてクエリーを実行する
+   *
+   * @param  array  $columns
+   * @return array|static[]
+   */
+  public function get($columns = ['*'])
+  {
+    return parent::get($columns); //  Illuminate\Database\Query\Builder
+  } //  FakeEc2 :: get()
+
   /**
    * インスタンスの起動
    *
@@ -79,28 +112,5 @@ class FakeEc2 extends Model
     $ec2->attributes['state'] = 'pending';             //  起動処理中へ
     $ec2->save();
   } //  FakeEc2 :: reboot()
-
-  /**
-   * Add an "order by" clause to the query.
-   *
-   * @param  string  $column
-   * @param  string  $direction
-   * @return Illuminate\Database\Query\Builder
-   */
-  public function orderBy($column, $direction = 'asc')
-  {
-    return parent::orderBy($column, $direction);
-  }
-
-  /**
-   * Execute the query as a "select" statement.
-   *
-   * @param  array  $columns
-   * @return array|static[]
-   */
-  public function get($columns = ['*'])
-  {
-    return parent::get($columns);
-  }
 
 } //  class FakeEc2

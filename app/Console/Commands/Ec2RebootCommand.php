@@ -3,18 +3,17 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 use RuntimeException;
 
-class Ec2Reboot extends Ec2
+class Ec2RebootCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドのシグニチャー（コマンド書式定義）
+   * コンソールコマンドの名前
    *
    * @var string
    */
-  protected $signature = 'ec2:reboot
-    {--instanceid= : 開始するインスタンスのインスタンスID}
-    {--nickname=   : 開始するインスタンスのニックネーム（これらのいずれかを指定）}';
+  protected $signature = 'ec2:reboot';
 
   /**
    * コンソールコマンドの説明
@@ -24,6 +23,31 @@ class Ec2Reboot extends Ec2
   protected $description = 'インスタンスを再起動します';
 
   /**
+   * コンソールコマンドのオプション定義
+   *
+   * @return mixed
+   */
+
+  protected function getOptions()
+  {
+    return  [
+      [
+        'instanceid',                   //  名前
+        'i',                            //  コマンドのショートカット
+        InputOption::VALUE_REQUIRED,    //  モード
+        '対象のインスタンスID',         //  説明
+        null,                           //  デフォルト値
+      ], [
+        'nickname',                     //  名前
+        null,                           //  コマンドのショートカット
+        InputOption::VALUE_REQUIRED,    //  モード
+        '対象インスタンスのニックネーム（これらのいずれかを指定）', //  説明
+        null,                           //  デフォルト値
+      ]
+    ];
+  }
+
+  /**
    * コマンドインスタンスの生成
    *
    * @return void
@@ -31,7 +55,7 @@ class Ec2Reboot extends Ec2
   public function __construct()
   {
       parent::__construct();
-  } //  Ec2Reboot :: __construct()
+  } //  Ec2RebootCommand :: __construct()
 
   /**
    * コンソールコマンドの実行
@@ -49,7 +73,7 @@ class Ec2Reboot extends Ec2
       $this->info(sprintf("%s(%s)を再起動しました。",
         $nickname, $instance_id));
     }
-  } //  Ec2Reboot :: handle()
+  } //  Ec2RebootCommand :: handle()
 
   /**
    * インスタンス状態の整合チェック
@@ -83,6 +107,6 @@ class Ec2Reboot extends Ec2
     if ($error) {
       throw new RuntimeException($error);
     }
-  } //  Ec2Reboot :: checkInstanceState()
+  } //  Ec2RebootCommand :: checkInstanceState()
 
-} //  class Ec2Reboot
+} //  class Ec2RebootCommand extends Ec2Command

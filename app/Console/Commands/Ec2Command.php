@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 use App\Ec2Factory;
 use InvalidArgumentException;
 
-class Ec2 extends Command
+class Ec2Command extends Command
 {
   /**
    * Ec2Factory クラスのインスタンス
@@ -14,6 +15,31 @@ class Ec2 extends Command
    * @var \App\Ec2Factory
    */
   protected $ec2;
+
+  /**
+   * コンソールコマンドのオプション定義
+   *
+   * @return mixed
+   */
+
+  protected function getOptions()
+  {
+    return  [
+      [
+        'instanceid',                   //  名前
+        'i',                            //  コマンドのショートカット
+        InputOption::VALUE_REQUIRED,    //  モード
+        '対象のインスタンスID',         //  説明
+        null,                           //  デフォルト値
+      ], [
+        'nickname',                     //  名前
+        null,                           //  コマンドのショートカット
+        InputOption::VALUE_REQUIRED,    //  モード
+        '対象インスタンスのニックネーム（これらのいずれかを指定）', //  説明
+        null,                           //  デフォルト値
+      ]
+    ];
+  }
 
   /**
    * コマンドインスタンスの生成
@@ -24,7 +50,7 @@ class Ec2 extends Command
   {
       parent::__construct();
       $this->ec2 = new Ec2Factory;
-  } //  Ec2 :: __construct()
+  } //  Ec2Command :: __construct()
 
   /**
    * 制御対象インスタンスの取得
@@ -58,6 +84,6 @@ class Ec2 extends Command
     }
 //  dd($entry);
     return $entry;
-  } //  Ec2 :: getInstanceInfo()
+  } //  Ec2Command :: getInstanceInfo()
 
-} //  class Ec2 extends Command
+} //  class Ec2Command extends Command

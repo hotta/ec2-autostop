@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Console\Commands\Ec2Autostop;
-use App\Console\Commands\Ec2List;
-use App\Console\Commands\Ec2Start;
-use App\Console\Commands\Ec2Stop;
-use App\Console\Commands\Ec2Reboot;
+use App\Console\Commands\Ec2AutostopCommand;
+use App\Console\Commands\Ec2ListCommand;
+use App\Console\Commands\Ec2StartCommand;
+use App\Console\Commands\Ec2StopCommand;
+use App\Console\Commands\Ec2RebootCommand;
 
 class Ec2ServiceProvider extends ServiceProvider
 {
@@ -38,19 +38,19 @@ class Ec2ServiceProvider extends ServiceProvider
   public function register()
   {
     $this->app->singleton('command.app.ec2.autostop', function () {
-      return new Ec2Autostop;
+      return new Ec2AutostopCommand;
     });
     $this->app->singleton('command.app.ec2.list', function () {
-      return new Ec2List;
+      return new Ec2ListCommand;
     });
     $this->app->singleton('command.app.ec2.start', function () {
-      return new Ec2Start;
+      return new Ec2StartCommand;
     });
     $this->app->singleton('command.app.ec2.stop', function () {
-      return new Ec2Stop;
+      return new Ec2StopCommand;
     });
     $this->app->singleton('command.app.ec2.reboot', function () {
-      return new Ec2Reboot;
+      return new Ec2RebootCommand;
     });
     $this->commands([
       'command.app.ec2.autostop',

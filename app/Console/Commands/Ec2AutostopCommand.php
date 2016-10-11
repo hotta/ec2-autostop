@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use AWS;
 
-class Ec2Autostop extends Ec2
+class Ec2AutostopCommand extends Ec2Command
 {
   /**
    * コンソールコマンドのシグニチャー（コマンド書式定義）
@@ -50,4 +50,4 @@ class Ec2Autostop extends Ec2
     dd($list);
   }
 
-} //  Class Ec2Autostop
+} //  Class Ec2AutostopCommand extends Ec2Command
