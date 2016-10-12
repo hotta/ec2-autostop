@@ -13,7 +13,7 @@ class Ec2StopCommand extends Ec2Command
    *
    * @var string
    */
-  protected $signature = 'ec2:stop';
+  protected $name = 'ec2:stop';
 
   /**
    * コンソールコマンドの説明

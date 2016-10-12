@@ -36,22 +36,20 @@ class Ec2Factory
     } else  {
       $this->auto = new Ec2Ctrl;    //  AWS API をコール
     }
-    $this->instanceList = $this->auto->orderBy('nickname')->get();
-    $this->normalize();
-    $this->checkManuals();
-    $this->set_state_j();
 //  dd($this->instanceList);
   } //  Ec2Factory :: __construct()
 
   /**
-   * レコード一覧の取得（標準モデル関数）
+   * インスタンス一覧の取得
    *
-   * @return array
+   * @return void
    */
-  public function all()
+  public function setData()
   {
-    return $this->instanceList;
-  } //  Ec2Factory :: all()
+    if (count($this->instanceList) < 1) {
+      $this->instanceList = $this->orderBy('nickname')->get();
+    }
+  } //  Ec2Factory :: setData()
 
   /**
    * 停止可能インスタンス一覧の取得
@@ -60,6 +58,7 @@ class Ec2Factory
    */
   public function getTerminables()
   {
+    $this->setData();
     $ret = [];
     for ($i=0; $i<count($this->instanceList); $i++) {
       if (strtolower($this->instanceList[$i]['terminable']) == 'true')  {
@@ -77,6 +76,7 @@ class Ec2Factory
    */
   public function findByInstanceId($instance_id)
   {
+    $this->setData();
     for ($i=0; $i<count($this->instanceList); $i++) {
       if ($this->instanceList[$i]['instance_id'] == $instance_id)  {
         return  $this->instanceList[$i];
@@ -93,6 +93,7 @@ class Ec2Factory
    */
   public function findByNickname($nickname)
   {
+    $this->setData();
     for ($i=0; $i<count($this->instanceList); $i++) {
       if ($this->instanceList[$i]['nickname'] == $nickname) {
         return  $this->instanceList[$i];
@@ -240,7 +241,11 @@ class Ec2Factory
    */
   public function get($columns = ['*'])
   {
-    return $this->auto->get($columns);
+    $this->auto->get($columns);
+    $this->normalize();
+    $this->checkManuals();
+    $this->set_state_j();
+    return $this;
   }
 
 } //  class Ec2Factory

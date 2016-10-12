@@ -45,7 +45,6 @@ resources/*
 !resources/manual/
 server.php
 storage/
-tests/*
-!tests/ArtisanTest.php
+tests/TestCase.php
 vendor/
 nbproject/private/

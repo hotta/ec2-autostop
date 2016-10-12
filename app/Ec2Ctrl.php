@@ -41,9 +41,9 @@ class Ec2Ctrl
    *
    * @return array
    */
-  public function orderBy()
+  public function orderBy($column, $direction = 'asc')
   {
-    usort($this->instanceList, 'self::compare_func');
+    usort($this->instanceList, $this->compare_func($column, $direction));
     return $this;
   } //  Ec2Ctrl :: all()
 
@@ -83,8 +83,17 @@ class Ec2Ctrl
    *
    * @return integer
    */
-  private function compare_func($a, $b)  {
-    return strcmp($a['nickname'], $b['nickname']);
+  private function compare_func($column, $direction = 'asc') {
+    return function ($a, $b) use ($column, $direction)  {
+      if ($direction != 'asc' && $direction == 'desc')  {
+        throw new RuntimeException('compare_func internal error');
+      }
+      $cmp = strcmp($a[$column], $b[$column]);
+      if ($direction == 'desc') {
+        $cmp *= -1;
+      }
+      return $cmp;
+    };
   } //  Ec2Ctrl :: compare_func()
 
   /**
