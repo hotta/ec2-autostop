@@ -35,19 +35,8 @@ class FakeEc2 extends Model
    */
   public function orderBy($column, $direction = 'asc')
   {
-    return parent::orderBy($column, $direction);
+    return parent::orderBy($column);
   } //  FakeEc2 :: orderBy()
-
-  /**
-   * "select" ステートメントとしてクエリーを実行する
-   *
-   * @param  array  $columns
-   * @return array|static[]
-   */
-  public function get($columns = ['*'])
-  {
-    return parent::get($columns); //  Illuminate\Database\Query\Builder
-  } //  FakeEc2 :: get()
 
   /**
    * インスタンスの起動
@@ -105,11 +94,13 @@ class FakeEc2 extends Model
     if (!$ec2)  {
       throw new RuntimeException('インスタンスが未登録');
     }
-    if ($ec2->attributes['state'] != 'running' &&
-        $ec2->attributes['state'] != 'stopped')  {
+    if ($ec2->attributes['state'] == 'running') {
+      $ec2->attributes['state'] = 'stopping';     //  停止処理中へ
+    } else if ($ec2->attributes['state'] == 'stopped')  {
+      $ec2->attributes['state'] = 'pending';      //  起動処理中へ
+    } else {
       throw new RuntimeException('インスタンスの状態が実行中／停止済み以外');
     }
-    $ec2->attributes['state'] = 'pending';             //  起動処理中へ
     $ec2->save();
   } //  FakeEc2 :: reboot()
 

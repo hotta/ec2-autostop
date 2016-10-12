@@ -8,11 +8,11 @@ use App\Ec2Factory;
 class Ec2ListCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドのシグニチャー（コマンド書式定義）
+   * コンソールコマンドの書式
    *
    * @var string
    */
-  protected $signature = 'ec2:list';
+  protected $name = 'ec2:list';
 
   /**
    * コンソールコマンドの説明

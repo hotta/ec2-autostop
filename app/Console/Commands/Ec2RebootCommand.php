@@ -9,11 +9,11 @@ use RuntimeException;
 class Ec2RebootCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドの名前
+   * コンソールコマンドの書式
    *
    * @var string
    */
-  protected $signature = 'ec2:reboot';
+  protected $name = 'ec2:reboot';
 
   /**
    * コンソールコマンドの説明
@@ -21,31 +21,6 @@ class Ec2RebootCommand extends Ec2Command
    * @var string
    */
   protected $description = 'インスタンスを再起動します';
-
-  /**
-   * コンソールコマンドのオプション定義
-   *
-   * @return mixed
-   */
-
-  protected function getOptions()
-  {
-    return  [
-      [
-        'instanceid',                   //  名前
-        'i',                            //  コマンドのショートカット
-        InputOption::VALUE_REQUIRED,    //  モード
-        '対象のインスタンスID',         //  説明
-        null,                           //  デフォルト値
-      ], [
-        'nickname',                     //  名前
-        null,                           //  コマンドのショートカット
-        InputOption::VALUE_REQUIRED,    //  モード
-        '対象インスタンスのニックネーム（これらのいずれかを指定）', //  説明
-        null,                           //  デフォルト値
-      ]
-    ];
-  }
 
   /**
    * コマンドインスタンスの生成

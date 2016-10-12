@@ -8,11 +8,11 @@ use AWS;
 class Ec2AutostopCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドのシグニチャー（コマンド書式定義）
+   * コンソールコマンド書式定義
    *
    * @var string
    */
-  protected $signature = 'ec2:autostop';
+  protected $name = 'ec2:autostop';
 
   /**
    * コンソールコマンドの説明
