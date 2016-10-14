@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 class CreateFakeEc2Table extends Migration
 {
     /**
-     * Run the migrations.
+     * php artisan migrate で呼ばれる
      *
      * @return void
      */

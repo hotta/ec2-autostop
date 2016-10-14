@@ -3,18 +3,17 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 use RuntimeException;
 
-class Ec2Start extends Ec2
+class Ec2StartCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドのシグニチャー（コマンド書式定義）
+   * コンソールコマンドの名前
    *
    * @var string
    */
-  protected $signature = 'ec2:start
-    {--instanceid= : 起動するインスタンスのインスタンスID}
-    {--nickname=   : 起動するインスタンスのニックネーム（これらのいずれかを指定）}';
+  protected $name = 'ec2:start';
 
   /**
    * コンソールコマンドの説明
@@ -31,7 +30,7 @@ class Ec2Start extends Ec2
   public function __construct()
   {
       parent::__construct();
-  } //  Ec2Start :: __construct()
+  } //  Ec2StartCommand :: __construct()
 
   /**
    * コンソールコマンドの実行
@@ -45,11 +44,11 @@ class Ec2Start extends Ec2
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
     $this->ec2->start($instance_id);
-    if ($this->option('verbose')) {
+    if ($this->getOutput()->isVerbose()) {
       $this->info(sprintf("%s(%s)を起動しました。",
         $nickname, $instance_id));
     }
-  } //  Ec2Start :: handle()
+  } //  Ec2StartCommand :: handle()
 
   /**
    * インスタンス状態の整合チェック
@@ -85,6 +84,6 @@ class Ec2Start extends Ec2
     if ($error) {
       throw new RuntimeException($error);
     }
-  } //  Ec2Start :: checkInstanceState()
+  } //  Ec2StartCommand :: checkInstanceState()
 
-} //  class Ec2Start
+} //  class Ec2StartCommand extends Ec2Command

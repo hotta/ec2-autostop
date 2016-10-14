@@ -3,18 +3,17 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 use RuntimeException;
 
-class Ec2Stop extends Ec2
+class Ec2StopCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドのシグニチャー（コマンド書式定義）
+   * コンソールコマンドの名前
    *
    * @var string
    */
-  protected $signature = 'ec2:stop
-  {--instanceid= : 停止するインスタンスのインスタンスID}
-  {--nickname=   : 停止するインスタンスのニックネーム（これらのいずれかを指定）}';
+  protected $name = 'ec2:stop';
 
   /**
    * コンソールコマンドの説明
@@ -31,7 +30,7 @@ class Ec2Stop extends Ec2
   public function __construct()
   {
       parent::__construct();
-  } //  Ec2Stop :: __construct()
+  } //  Ec2StopCommand :: __construct()
 
   /**
    * コンソールコマンドの実行
@@ -45,11 +44,11 @@ class Ec2Stop extends Ec2
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
     $this->ec2->stop($instance_id);
-    if ($this->option('verbose')) {
+    if ($this->getOutput()->isVerbose()) {
       $this->info(sprintf("%s(%s)を停止しました。", 
         $nickname, $instance_id));
     }
-  } //  Ec2Stop :: handle()
+  } //  Ec2StopCommand :: handle()
 
   /**
    * インスタンス状態の整合チェック
@@ -80,6 +79,6 @@ class Ec2Stop extends Ec2
     if ($error) {
       throw new RuntimeException($error);
     }
-  } //  Ec2Stop :: checkInstanceState()
+  } //  Ec2StopCommand :: checkInstanceState()
 
-} //  class Ec2Stop
+} //  class Ec2StopCommand extends Ec2Command

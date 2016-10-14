@@ -3,18 +3,17 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Console\Input\InputOption;
 use RuntimeException;
 
-class Ec2Reboot extends Ec2
+class Ec2RebootCommand extends Ec2Command
 {
   /**
-   * コンソールコマンドのシグニチャー（コマンド書式定義）
+   * コンソールコマンドの書式
    *
    * @var string
    */
-  protected $signature = 'ec2:reboot
-    {--instanceid= : 開始するインスタンスのインスタンスID}
-    {--nickname=   : 開始するインスタンスのニックネーム（これらのいずれかを指定）}';
+  protected $name = 'ec2:reboot';
 
   /**
    * コンソールコマンドの説明
@@ -31,7 +30,7 @@ class Ec2Reboot extends Ec2
   public function __construct()
   {
       parent::__construct();
-  } //  Ec2Reboot :: __construct()
+  } //  Ec2RebootCommand :: __construct()
 
   /**
    * コンソールコマンドの実行
@@ -45,11 +44,11 @@ class Ec2Reboot extends Ec2
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
     $this->ec2->reboot($instance_id);
-    if ($this->option('verbose')) {
+    if ($this->getOutput()->isVerbose()) {
       $this->info(sprintf("%s(%s)を再起動しました。",
         $nickname, $instance_id));
     }
-  } //  Ec2Reboot :: handle()
+  } //  Ec2RebootCommand :: handle()
 
   /**
    * インスタンス状態の整合チェック
@@ -83,6 +82,6 @@ class Ec2Reboot extends Ec2
     if ($error) {
       throw new RuntimeException($error);
     }
-  } //  Ec2Reboot :: checkInstanceState()
+  } //  Ec2RebootCommand :: checkInstanceState()
 
-} //  class Ec2Reboot
+} //  class Ec2RebootCommand extends Ec2Command

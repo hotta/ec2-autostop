@@ -2,9 +2,10 @@
 *.orig
 *.swp
 .gitattributes
+app/*
 app/Console/*
 app/Console/Commands/*
-!app/Console/Commands/Ec2*
+!app/Console/Commands/Ec2AutostopCommand.php
 app/Events/
 app/Exceptions/
 app/Http/*
@@ -44,7 +45,6 @@ resources/*
 !resources/manual/
 server.php
 storage/
-tests/*
-!tests/ArtisanTest.php
+tests/TestCase.php
 vendor/
-/nbproject/private/
+nbproject/private/
