@@ -44,7 +44,7 @@ class Ec2StartCommand extends Ec2Command
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
     $this->ec2->start($instance_id);
-    if ($this->option('verbose')) {
+    if ($this->getOutput()->isVerbose()) {
       $this->info(sprintf("%s(%s)を起動しました。",
         $nickname, $instance_id));
     }

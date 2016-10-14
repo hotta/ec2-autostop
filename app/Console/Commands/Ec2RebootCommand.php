@@ -44,7 +44,7 @@ class Ec2RebootCommand extends Ec2Command
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
     $this->ec2->reboot($instance_id);
-    if ($this->option('verbose')) {
+    if ($this->getOutput()->isVerbose()) {
       $this->info(sprintf("%s(%s)を再起動しました。",
         $nickname, $instance_id));
     }

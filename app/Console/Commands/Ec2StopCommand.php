@@ -44,7 +44,7 @@ class Ec2StopCommand extends Ec2Command
     $nickname = $info['nickname'];
     $instance_id = $info['instance_id'];
     $this->ec2->stop($instance_id);
-    if ($this->option('verbose')) {
+    if ($this->getOutput()->isVerbose()) {
       $this->info(sprintf("%s(%s)を停止しました。", 
         $nickname, $instance_id));
     }

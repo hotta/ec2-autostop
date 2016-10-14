@@ -47,7 +47,7 @@ class Ec2Factory
   public function setData()
   {
     if (count($this->instanceList) < 1) {
-      $this->instanceList = $this->orderBy('nickname')->get();
+      $this->instanceList = $this->auto->setData();
     }
   } //  Ec2Factory :: setData()
 

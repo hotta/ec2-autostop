@@ -104,4 +104,19 @@ class FakeEc2 extends Model
     $ec2->save();
   } //  FakeEc2 :: reboot()
 
+  /**
+   * インスタンス一覧の取得
+   *
+   * @return array
+   */
+  public function setData()
+  {
+    $ec2 = $this->orderBy('nickname')->get();
+    $list = [];
+    foreach ($ec2 as $item) {
+      $list[] = $item->attributes;
+    }
+    return $list;
+  } //  FakeEc2 :: setData()
+
 } //  class FakeEc2

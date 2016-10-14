@@ -1,0 +1,77 @@
+<?php
+
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use App\Console\Commands\GoodExampleCommand;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Input\ArrayInput;
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Tester\CommandTester;
+
+class GoodExampleCommandTest extends TestCase
+{
+  public function setUp()
+  {
+    parent::setUp();
+    $goodExampleCommand = new \App\Console\Commands\GoodExampleCommand;
+    $goodExampleCommand->setLaravel($this->app);
+
+    // ApplicationにCommandを登録
+    $app = new Application();
+    $app->add($goodExampleCommand);
+
+    // CommandTesterを被せる
+    $command = $app->find('goodexample:start');
+    $this->command = new CommandTester($command);
+  }
+
+  /** example:start - no options
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage Either id or tag needed.
+   */
+  public function testGoodExampleCommandWithoutMandatoryOptionsWillFail()
+  {
+    $output = $this->execute();
+  }
+
+  /** example:start - id specified */
+  public function testGoodExampleCommandWithIdWillSuccess()
+  {
+    $output = $this->execute(['--id' => 'id1']);
+    $this->assertEquals('GoodExampleCommand called with id=id1', 
+      trim($output));
+  }
+
+  /** example:star - tag specified */
+  public function testGoodExampleCommandWithTagWillSuccess()
+  {
+    $output = $this->execute(['--tag' => 'tag1']);
+    $this->assertEquals('GoodExampleCommand called with tag=tag1', 
+      trim($output));
+  }
+
+  /** example:start - id specified (verbose) */
+  public function testGoodExampleCommandWithIdVerboseWillSuccess()
+  {
+    $output = $this->execute(['--id' => 'id1', '-v' => null ],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+    $this->assertEquals('GoodExampleCommand called with id=id1(verbose)', 
+      trim($output));
+  }
+
+  /** example:star - extra options specified 
+   * @expectedException InvalidArgumentException
+   */
+  public function testGoodExampleCommandWithExtraOptions()
+  {
+    $output = $this->execute(['--unknown' => 'dummy']);
+  }
+
+  protected function execute(array $input = [], $options = [])
+  {
+    $this->command->execute($input, $options);
+    return $this->command->getDisplay();
+  }
+
+}

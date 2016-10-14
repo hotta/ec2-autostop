@@ -38,6 +38,15 @@ class Ec2Command extends Command
         '対象インスタンスのニックネーム（これらのいずれかを指定）', //  説明
         null,                           //  デフォルト値
       ]
+/*
+, [
+        'verbose',                      //  名前
+        'v',                            //  コマンドのショートカット
+        InputOption::VALUE_OPTIONAL,    //  モード
+        '冗長表示',                     //  説明
+        null,                           //  デフォルト値
+      ]
+*/
     ];
   }
 

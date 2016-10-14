@@ -5,14 +5,19 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 
-class Ec2TestCase extends TestCase
+class Ec2CommandTestCase extends TestCase
 {
   /** @var \App\Console\Commands\Ec2List  */
   protected $command;
 
   /**
    * テスト前処理
+   *
+   * @param Object $commandToTest テスト対象クラスのオブジェクト
+   * @param string $signature     コマンドのシグニチャー
    *
    * @return void
    */
@@ -22,21 +27,18 @@ class Ec2TestCase extends TestCase
     $this->artisan('migrate:refresh');//  テーブル作り直し(database/migrations)
     $this->seed();                    //  テストデータ投入(database/seeds)
     putenv('AWS_EC2_STUB=true');
-  } //  Ec2TestCase :: setUp()
+  } //  Ec2CommandTestCase :: setUp()
 
   /**
    * artisan コマンドラッパー
+   * パラメーターの詳細は CommandTester::execute() を参照
    *
    * @return string
    */
-  protected function execute(array $params = [])
+  protected function execute(array $input = [], $options = [])
   {
-    $output = new BufferedOutput();
-    $this->command->run(
-      new ArrayInput($params),
-      $output
-    );
-    return $output;
-  } //  Ec2TestCase :: execute()
+    $this->command->execute($input, $options);
+    return $this->command->getDisplay();
+  } //  Ec2CommandTestCase :: execute()
 
-} //  class Ec2TestCase extends TestCase
+} //  class Ec2CommandTestCase extends TestCase
