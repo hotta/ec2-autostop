@@ -28,7 +28,7 @@ class FakeEc2TableSeeder extends Seeder
           'terminable'  => 'true',
           'stop_at'     => '13:00',
           'private_ip'  => '172.16.0.8',
-          'state'       => 'running',
+          'state'       => 'stopped',
         ], [
           'nickname'    => 'dev-dummy1',
           'instance_id' => 'i-dev-dummy1',
@@ -36,7 +36,7 @@ class FakeEc2TableSeeder extends Seeder
           'terminable'  => 'false',
           'stop_at'     => '14:00',
           'private_ip'  => '172.16.0.8',
-          'state'       => 'running',
+          'state'       => 'stopped',
         ], [
           'nickname'    => 'dev-dummy2',
           'instance_id' => 'i-dev-dummy2',
@@ -44,7 +44,7 @@ class FakeEc2TableSeeder extends Seeder
           'terminable'  => 'true',
           'stop_at'     => '15:00',
           'private_ip'  => '172.16.0.99',
-          'state'       => 'pending',
+          'state'       => 'stopped',
         ], [
           'nickname'    => 'dev-dummy3',
           'instance_id' => 'i-dev-dummy3',
@@ -52,7 +52,7 @@ class FakeEc2TableSeeder extends Seeder
           'terminable'  => 'true',
           'stop_at'     => '16:00',
           'private_ip'  => '172.16.0.99',
-          'state'       => 'stopping',
+          'state'       => 'stopped',
         ], [
           'nickname'    => 'dev-dummy4',
           'instance_id' => 'i-dev-dummy4',
@@ -60,7 +60,7 @@ class FakeEc2TableSeeder extends Seeder
           'terminable'  => 'true',
           'stop_at'     => '17:00',
           'private_ip'  => '172.16.0.99',
-          'state'       => 'shutting-down',
+          'state'       => 'stopped',
         ], [
           'nickname'    => 'dev-dummy5',
           'instance_id' => 'i-dev-dummy5',
@@ -68,7 +68,7 @@ class FakeEc2TableSeeder extends Seeder
           'terminable'  => 'true',
           'stop_at'     => '18:00',
           'private_ip'  => '172.16.0.99',
-          'state'       => 'terminated',
+          'state'       => 'stopped',
         ]
       ]);
   } //  FakeEc2TableSeeder :: run()

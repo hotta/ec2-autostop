@@ -2,7 +2,6 @@
 *.orig
 *.swp
 .gitattributes
-app/*
 app/Console/*
 app/Console/Commands/*
 !app/Console/Commands/Ec2AutostopCommand.php
@@ -15,7 +14,8 @@ app/Http/Requests/*
 !app/Http/Requests/ManualRequest.php
 !app/Http/routes.php
 app/Jobs/*
-!app/Jobs/Ec2*
+!app/Jobs/ChangeStateJob.php
+!app/Jobs/Ec2AutoStopJob.php
 app/Listeners/
 app/Policies/
 app/Providers/*

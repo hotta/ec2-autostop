@@ -8,14 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support;
 use RuntimeException;
 use Illuminate\Database\Query\Builder;
+use App\Jobs\ChangeStateJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\FakeEc2;
 
 class FakeEc2 extends Model
 {
+  use DispatchesJobs;
+
   protected $table = 'fake_ec2';          //  実テーブル名
   protected $primaryKey = 'instance_id';  //  プライマリキー項目名
   public $incrementing = false;           //  主キーは自動増分?
   public $timestamps = false;             //  自動更新のタイムスタンプ項目あり
 
+  /**
+   * EC2 インスタンスの状態変更
+   *
+   * @param  string  $instance_id
+   * @param  string  $state
+   * @return void
+   */
   public function changeState($instance_id, $state = 'unKnown')
   {
     $ec2 = $this->find($instance_id);
@@ -24,7 +36,7 @@ class FakeEc2 extends Model
     }
     $ec2->attributes['state'] = $state;
     $ec2->save();
-  } //  FakeEc2 :: changeState()
+  }
 
   /**
    * クエリーに "order by" 句を追加する
@@ -36,7 +48,7 @@ class FakeEc2 extends Model
   public function orderBy($column, $direction = 'asc')
   {
     return parent::orderBy($column);
-  } //  FakeEc2 :: orderBy()
+  }
 
   /**
    * インスタンスの起動
@@ -57,7 +69,8 @@ class FakeEc2 extends Model
     }
     $ec2->attributes['state'] = 'pending';             //  起動処理中へ
     $ec2->save();
-  } //  FakeEc2 :: start()
+    $this->dispatch(new ChangeStateJob($instance_id, 'running', 30));
+  }
 
   /**
    * インスタンスの停止
@@ -78,7 +91,8 @@ class FakeEc2 extends Model
     }
     $ec2->attributes['state'] = 'stopping';             //  停止処理中へ
     $ec2->save();
-  } //  FakeEc2 :: stop()
+    $this->dispatch(new ChangeStateJob($instance_id, 'stopped', 30));
+  }
 
   /**
    * インスタンスの再起動
@@ -102,7 +116,8 @@ class FakeEc2 extends Model
       throw new RuntimeException('インスタンスの状態が実行中／停止済み以外');
     }
     $ec2->save();
-  } //  FakeEc2 :: reboot()
+    $this->dispatch(new ChangeStateJob($instance_id, 'running', 30));
+  }
 
   /**
    * インスタンス一覧の取得
@@ -117,6 +132,6 @@ class FakeEc2 extends Model
       $list[] = $item->attributes;
     }
     return $list;
-  } //  FakeEc2 :: setData()
+  }
 
-} //  class FakeEc2
+}
