@@ -18,31 +18,38 @@ AWS のインスタンスの一覧表示や起動／停止を行う、Laravel �
 
 ```bash
 $ git clone git@github.com:hotta/laravel-aws.git
-$ cp -rp laravel-aws/app $LARAVEL_HOME
+$ cp -rp laravel-aws/* $LARAVEL_HOME
+$ cp -rp laravel-aws/.??* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
 $ cp .env.default .env
-$ php artisan | grep ec2
+$ sudo su - postgres
+$ createuser -s vagrant
+$ exit
+$ createdb vagrant
+$ ./artisan migrate
+$ ./artisan | grep ec2
  ec2
   ec2:list            EC2 インスタンスの一覧を表示します
   ec2:reboot          インスタンスを再起動します
   ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
-$ php artisan ec2:list （スタブ利用時の出力例）
+$ ./artisan db:seed
+$ ./artisan ec2:list （スタブ利用時の出力例）
 
-Nickname      Private IP    Status             Instance ID
-------------------------------------------------------------
-dev-test1     172.16.1.8    stopped        i-0987183xx9ef17d77
-dev-web1      172.16.0.8    running        i-00c3eaeb0xxx8a242
-dev-dummy1    172.16.0.8    running        i-xxc3eaeb0426xx242
++------------+-------------+---------+--------------+
+| Nickname   | Private IP  | Status  | Instance ID  |
++------------+-------------+---------+--------------+
+| dev-dummy1 | 172.16.0.8  | stopped | i-dev-dummy1 |
+| dev-dummy2 | 172.16.0.99 | stopped | i-dev-dummy2 |
++------------+-------------+---------+--------------+
 ```
 
 # スクリーンショット
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-# 実環境で利用する場合
+# 実環境(AWS)で利用する場合（.envへの追加）
 
-- AWS インスタンスを操作する場合、.env の以下を変更:
-  - AWS への API リクエスト権限のない（AMI ロールを付与されていない）ホストから実行する場合、.AWS_ACCESS_KEY_ID と AWS_SECRET_ACCESS_KEY を追加
-  - 東京リージョン利用の場合、 AWS_REGION=ap-northeast-1 を追加
-  - AWS_EC2_STUB を false に変更またはコメントアウト
+- AWS への API リクエスト権限のない（AMI ロールを付与されていない）ホストから実行する場合、.AWS_ACCESS_KEY_ID と AWS_SECRET_ACCESS_KEY を追加
+- 東京リージョン利用の場合、 AWS_REGION=ap-northeast-1 を追加
+- AWS_EC2_STUB を false に変更またはコメントアウト
