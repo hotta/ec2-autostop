@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Ec2AutoFactory;
+use App\Ec2Factory;
 use App\Manual;
 use App\Http\Requests\ManualRequest;
 
 class ManualsController extends Controller
 {
   public function index() {
-    $ec2 = new Ec2AutoFactory;
+    $ec2 = new Ec2Factory;
     $servers = $ec2->getTerminables();  //  停止可能インスタンス一覧の取得
 //  dd($servers);
     return view('manual.index')
@@ -27,12 +27,12 @@ class ManualsController extends Controller
    */
   public function start($instance_id, $nickname)
   {
-    $ec2 = new Ec2AutoFactory;
+    $ec2 = new Ec2Factory;
     $ec2->start($instance_id);
     $this->save($instance_id, $nickname);
     return redirect('/')->with('flash_message', 
       "サーバー $nickname を起動しました");
-  } //  Ec2AutoFactory :: start()
+  } //  Ec2Factory :: start()
 
   /**
    * インスタンスの停止
@@ -41,12 +41,12 @@ class ManualsController extends Controller
    */
   public function stop($instance_id, $nickname)
   {
-    $ec2 = new Ec2AutoFactory;
+    $ec2 = new Ec2Factory;
     $ec2->stop($instance_id);
     $this->save($instance_id, $nickname);
     return redirect('/')->with('flash_message', 
       "サーバー $nickname を停止しました");
-  } //  Ec2AutoFactory :: stop()
+  } //  Ec2Factory :: stop()
 
   /**
    * 手動モードへ
@@ -60,7 +60,7 @@ class ManualsController extends Controller
     $this->save($instance_id, $nickname);
     return redirect('/')->with('flash_message', 
       "サーバー $nickname を手動モードに切り替えました");
-  } //  Ec2AutoFactory :: to_manual()
+  } //  Ec2Factory :: to_manual()
 
   /**
    * 手動レコード作成
@@ -74,6 +74,6 @@ class ManualsController extends Controller
       'instance_id' =>  $instance_id,
       'nickname'    =>  $nickname,
     ]);     //  あれば update 、なければ insert
-  } //  Ec2AutoFactory :: save()
+  } //  Ec2Factory :: save()
 
 } //  class ManualsController extends Controller

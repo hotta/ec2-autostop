@@ -49,7 +49,7 @@ class Ec2Factory
     if (count($this->instanceList) < 1) {
       $this->instanceList = $this->auto->setData();
     }
-  } //  Ec2Factory :: setData()
+  }
 
   /**
    * 停止可能インスタンス一覧の取得
@@ -66,7 +66,7 @@ class Ec2Factory
       }
     }
     return $ret;
-  } //  Ec2Factory :: getTerminables()
+  }
 
   /**
    * インスタンスIDによる対象インスタンスの取得
@@ -83,7 +83,7 @@ class Ec2Factory
       }
     }
     return null; //  No such instance
-  } //  Ec2Factory :: findByInstanceId()
+  }
 
   /**
    * タグ名による対象インスタンスの取得
@@ -100,7 +100,7 @@ class Ec2Factory
       }
     }
     return null; //  No such name
-  } //  Ec2Factory :: findByNickname()
+  }
 
   /**
    * 表示用日本語ステータスのセット
@@ -137,7 +137,7 @@ class Ec2Factory
         break;
       }
     }
-  } //  Ec2Factory :: set_state_j()
+  }
 
   /**
    * 属性データの正規化
@@ -170,7 +170,7 @@ class Ec2Factory
       }
     }
 //  dd($this->instanceList);
-  } //  Ec2Factory :: normalize()
+  }
 
   /**
    * レコードが存在したら手動モードに変更
@@ -189,7 +189,7 @@ class Ec2Factory
         }
       }
     }
-  } //  Ec2Factory :: checkManuals()
+  }
 
   /**
    * インスタンスの起動
@@ -199,7 +199,7 @@ class Ec2Factory
   public function start($instance_id)
   {
     return $this->auto->start($instance_id);
-  } //  Ec2Factory :: start()
+  }
 
   /**
    * インスタンスの停止
@@ -209,7 +209,7 @@ class Ec2Factory
   public function stop($instance_id)
   {
     return  $this->auto->stop($instance_id);
-  } //  Ec2Factory :: stop()
+  }
 
   /**
    * インスタンスの再起動
@@ -219,7 +219,7 @@ class Ec2Factory
   public function reboot($instance_id)
   {
     return $this->auto->reboot($instance_id);
-  } //  Ec2Factory :: reboot()
+  }
 
   /**
    * Add an "order by" clause to the query.
@@ -231,7 +231,7 @@ class Ec2Factory
   public function orderBy($column, $direction = 'asc')
   {
     return $this->auto->orderBy($column, $direction);
-  } //  Ec2Factory :: orderBy()
+  }
 
   /**
    * Execute the query as a "select" statement.
@@ -248,4 +248,4 @@ class Ec2Factory
     return $this;
   }
 
-} //  class Ec2Factory
+}
