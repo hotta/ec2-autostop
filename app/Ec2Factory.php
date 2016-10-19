@@ -47,7 +47,7 @@ class Ec2Factory
   public function setData()
   {
     if (count($this->instanceList) < 1) {
-      $this->instanceList = $this->auto->setData();
+      $this->get();
     }
   }
 
@@ -61,7 +61,7 @@ class Ec2Factory
     $this->setData();
     $ret = [];
     for ($i=0; $i<count($this->instanceList); $i++) {
-      if (strtolower($this->instanceList[$i]['terminable']) == 'true')  {
+      if ($this->instanceList[$i]['terminable'])  {
         $ret[] = $this->instanceList[$i];
       }
     }
@@ -137,6 +137,7 @@ class Ec2Factory
         break;
       }
     }
+//  dd($this->instanceList);
   }
 
   /**
@@ -145,6 +146,9 @@ class Ec2Factory
    * @return void
    */
   private function normalize()  {
+
+    $collection = collect([ 1, '1', 'true', true ]);
+
     for ($i=0; $i<count($this->instanceList); $i++)  {
       foreach ([ 
         'nickname',     //  タグ名
@@ -167,6 +171,15 @@ class Ec2Factory
         if (!isset($this->instanceList[$i][$key])) {
           $this->instanceList[$i][$key] = ''; //  任意パラメーター
         }
+      }
+      if (is_string($this->instanceList[$i]['terminable'])) {
+        $this->instanceList[$i]['terminable'] = 
+          strtolower($this->instanceList[$i]['terminable']);
+      }
+      if ($collection->contains($this->instanceList[$i]['terminable'])) {
+        $this->instanceList[$i]['terminable'] = true;
+      } else  {
+        $this->instanceList[$i]['terminable'] = false;
       }
     }
 //  dd($this->instanceList);
@@ -241,7 +254,7 @@ class Ec2Factory
    */
   public function get($columns = ['*'])
   {
-    $this->auto->get($columns);
+    $this->instanceList = $this->auto->get($columns);
     $this->normalize();
     $this->checkManuals();
     $this->set_state_j();
