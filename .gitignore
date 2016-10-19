@@ -4,7 +4,7 @@
 .gitattributes
 app/Console/*
 app/Console/Commands/*
-!app/Console/Commands/Ec2AutostopCommand.php
+!app/Console/Commands/Ec2*
 app/Events/
 app/Exceptions/
 app/Http/*

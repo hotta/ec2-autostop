@@ -124,7 +124,7 @@ class FakeEc2 extends Model
    *
    * @return array
    */
-  public function setData()
+  public function get()
   {
     $ec2 = $this->orderBy('nickname')->get();
     $list = [];
