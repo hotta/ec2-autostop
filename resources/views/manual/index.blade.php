@@ -4,7 +4,10 @@
 
 @section('content')
 <h1>サーバー起動／停止制御</h1>
-<h5>{{ $timestamp}} 現在</h5>
+@if ($stub_mode)
+  <button class="btn btn-danger" type="button">{{ $stub_mode}}</button>
+@endif
+<h5 class='current_timestamp'>{{ $timestamp}} 現在</h5>
 <table class='table table-striped custom-va'>
 <thead>
   <tr>
@@ -64,7 +67,7 @@
   @endif
 
 {{-- ボタン --}}
-  @if (preg_match('/^\d+:\d+$/', $s['stop_at']))
+  @if (preg_match('/^\d+:\d+(:\d+)?$/', $s['stop_at']))
     <td>
       <form method="post" class="form-group" style="display:inline" 
         id="manual_{{ $s['instance_id'] }}" 

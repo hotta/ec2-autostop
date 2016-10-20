@@ -24,6 +24,10 @@ class Ec2Factory
    */
   protected $instanceList = [];
 
+  public function get_instanceList() {
+    return  $this->instanceList;
+  }
+
   /**
    * コンストラクタ
    *
@@ -36,7 +40,6 @@ class Ec2Factory
     } else  {
       $this->auto = new Ec2Ctrl;    //  AWS API をコール
     }
-//  dd($this->instanceList);
   } //  Ec2Factory :: __construct()
 
   /**
@@ -121,23 +124,18 @@ class Ec2Factory
         break;
       case 'stopping':
         $this->instanceList[$i]['state_j'] = '停止処理中';
-        $this->instanceList[$i]['stop_at'] = '';
         break;
       case 'stopped':
         $this->instanceList[$i]['state_j'] = '停止済み';
-        $this->instanceList[$i]['stop_at'] = '';
         break;
       case 'shutting-down':
         $this->instanceList[$i]['state_j'] = '削除処理中';
-        $this->instanceList[$i]['stop_at'] = '';
         break;
       case 'terminated':
         $this->instanceList[$i]['state_j'] = '削除済み';
-        $this->instanceList[$i]['stop_at'] = '';
         break;
       }
     }
-//  dd($this->instanceList);
   }
 
   /**
@@ -146,8 +144,18 @@ class Ec2Factory
    * @return void
    */
   private function normalize()  {
+    $this->normalize_mandatory();
+    $this->normalize_description();
+    $this->normalize_stop_at();
+    $this->normalize_terminable();
+  }
 
-    $collection = collect([ 1, '1', 'true', true ]);
+  /**
+   * 属性データの正規化（必須項目）
+   *
+   * @return void
+   */
+  private function normalize_mandatory()  {
 
     for ($i=0; $i<count($this->instanceList); $i++)  {
       foreach ([ 
@@ -163,26 +171,63 @@ class Ec2Factory
           abort(503);  //  必須パラメーター
         }
       }
-      foreach ([
-        'description',  //  タグ名
-        'stop_at',      //  タグ名
-        'terminable',   //  タグ名
-      ] as $key)  {
-        if (!isset($this->instanceList[$i][$key])) {
-          $this->instanceList[$i][$key] = ''; //  任意パラメーター
-        }
+    }
+  }
+
+  /**
+   * 属性データの正規化（説明）
+   *
+   * @return void
+   */
+  private function normalize_description()  {
+
+    for ($i=0; $i<count($this->instanceList); $i++)  {
+      if (!isset($this->instanceList[$i]['description'])) {
+        $this->instanceList[$i]['description'] = '';
       }
-      if (is_string($this->instanceList[$i]['terminable'])) {
+    }
+  }
+
+  /**
+   * 属性データの正規化（停止時刻）
+   *
+   * @return void
+   */
+  private function normalize_stop_at()  {
+
+    for ($i=0; $i<count($this->instanceList); $i++)  {
+      if (!isset($this->instanceList[$i]['stop_at'])) {
+        $this->instanceList[$i]['stop_at'] = '';
+      } else if (!preg_match('/^\d+:\d+(:\d+)?$/', 
+          $this->instanceList[$i]['stop_at']))  {
+          \Log::error(sprintf("stop_at format error : %s", 
+            $this->instanceList[$i]['stop_at']));
+          abort(503);  //  必須パラメーター
+      }
+    }
+  }
+
+  /**
+   * 属性データの正規化（停止可能）
+   *
+   * @return void
+   */
+  private function normalize_terminable()  {
+
+    for ($i=0; $i<count($this->instanceList); $i++)  {
+      if (!isset($this->instanceList[$i]['terminable'])) {
+        $this->instanceList[$i]['terminable'] = false;
+      } else if (is_string($this->instanceList[$i]['terminable'])) {
         $this->instanceList[$i]['terminable'] = 
           strtolower($this->instanceList[$i]['terminable']);
       }
-      if ($collection->contains($this->instanceList[$i]['terminable'])) {
+      if ($this->instanceList[$i]['terminable'] === true  ||
+          $this->instanceList[$i]['terminable'] === 'true') {
         $this->instanceList[$i]['terminable'] = true;
       } else  {
         $this->instanceList[$i]['terminable'] = false;
       }
     }
-//  dd($this->instanceList);
   }
 
   /**

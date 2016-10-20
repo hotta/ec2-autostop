@@ -16,8 +16,10 @@ class CreateFakeEc2Table extends Migration
             $table->text('nickname');       //  サーバーのニックネーム
             $table->text('instance_id');    //  インスタンスID
             $table->text('description');    //  説明
-            $table->boolean('terminable');  //  終了可能
-            $table->time('stop_at');        //  既定の停止時刻
+            $table->text('terminable')      //  終了可能
+                  ->nullable();
+            $table->time('stop_at')         //  既定の停止時刻
+                  ->nullable();
             $table->ipAddress('private_ip');
             $table->enum('state', [         //  サーバーの動作状態
               'pending',      //  起動処理中
