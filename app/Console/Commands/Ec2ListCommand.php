@@ -49,15 +49,17 @@ class Ec2ListCommand extends Ec2Command
   public function handle()
   {
     $ec2 = new Ec2Factory;
-    $headers = [ 'Nickname', 'Private IP', 'Status', 'Instance ID' ];
+    $headers = [ 'Nickname', 'Private IP', 'Status', 'Instance ID', 'Stop at',
+      'Term' ];
     $filtered = $ec2->orderBy('nickname')->get();
-    $instances = [];
     $i = 0;
     foreach ($filtered as $i => $e)  {
       $instances[$i]['nickname']    = $e['nickname'];
       $instances[$i]['private_ip']  = $e['private_ip'];
       $instances[$i]['state']       = $e['state'];
       $instances[$i]['instance_id'] = $e['instance_id'];
+      $instances[$i]['stop_at']     = $e['stop_at'];
+      $instances[$i]['terminable']  = $e['terminable'];
       $i++;
     }
     $this->table($headers, $instances);

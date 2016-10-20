@@ -17,7 +17,9 @@ class ManualsController extends Controller
 //  dd($servers);
     return view('manual.index')
       ->with('timestamp', date('Y-m-d H:i:s'))
-      ->with('servers', $servers);
+      ->with('servers', $servers)
+      ->with('stub_mode', 
+        env('AWS_EC2_STUB', false) ? 'スタブ動作中' : null);
   }
 
   /**
