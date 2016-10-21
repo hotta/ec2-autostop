@@ -1,32 +1,24 @@
 <?php
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+require_once 'Ec2TestCase.php';
 
-class Ec2CommandTestCase extends TestCase
+class Ec2CommandTestCase extends Ec2TestCase
 {
-  /** @var \App\Console\Commands\Ec2List  */
+  /** @var \App\Console\Commands\Ec2*  */
   protected $command;
 
   /**
    * テスト前処理
-   *
-   * @param Object $commandToTest テスト対象クラスのオブジェクト
-   * @param string $signature     コマンドのシグニチャー
    *
    * @return void
    */
   public function setUp()
   {
     parent::setUp();
-    $this->artisan('migrate:refresh');//  テーブル作り直し(database/migrations)
-    $this->seed();                    //  テストデータ投入(database/seeds)
-    putenv('AWS_EC2_STUB=true');
   } //  Ec2CommandTestCase :: setUp()
 
   /**

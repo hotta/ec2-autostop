@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Support;
 use App\FakeEc2;
 use App\Ec2Ctrl;
+use Illuminate\Database\Eloquent\Collection as Collection;
 
 class Ec2Factory
 {
@@ -195,6 +196,8 @@ class Ec2Factory
    */
   private function normalize_stop_at()  {
 
+    $collection = collect([ 'pending', 'running' ]);
+
     for ($i=0; $i<count($this->instanceList); $i++)  {
       if (!isset($this->instanceList[$i]['stop_at'])) {
         $this->instanceList[$i]['stop_at'] = '';
@@ -203,6 +206,9 @@ class Ec2Factory
           \Log::error(sprintf("stop_at format error : %s", 
             $this->instanceList[$i]['stop_at']));
           abort(503);  //  必須パラメーター
+      }
+      if (! $collection->contains($this->instanceList[$i]['state']))  {
+        $this->instanceList[$i]['stop_at'] = 'manual';
       }
     }
   }
@@ -214,6 +220,8 @@ class Ec2Factory
    */
   private function normalize_terminable()  {
 
+    $collection = collect([ '1', 'true' ]);
+
     for ($i=0; $i<count($this->instanceList); $i++)  {
       if (!isset($this->instanceList[$i]['terminable'])) {
         $this->instanceList[$i]['terminable'] = false;
@@ -221,8 +229,7 @@ class Ec2Factory
         $this->instanceList[$i]['terminable'] = 
           strtolower($this->instanceList[$i]['terminable']);
       }
-      if ($this->instanceList[$i]['terminable'] === true  ||
-          $this->instanceList[$i]['terminable'] === 'true') {
+      if ($collection->contains($this->instanceList[$i]['terminable'])) {
         $this->instanceList[$i]['terminable'] = true;
       } else  {
         $this->instanceList[$i]['terminable'] = false;
@@ -280,18 +287,6 @@ class Ec2Factory
   }
 
   /**
-   * Add an "order by" clause to the query.
-   *
-   * @param  string  $column
-   * @param  string  $direction
-   * @return Illuminate\Database\Query\Builder
-   */
-  public function orderBy($column, $direction = 'asc')
-  {
-    return $this->auto->orderBy($column, $direction);
-  }
-
-  /**
    * Execute the query as a "select" statement.
    *
    * @param  array  $columns
@@ -299,7 +294,22 @@ class Ec2Factory
    */
   public function get($columns = ['*'])
   {
-    $this->instanceList = $this->auto->get($columns);
+    $list = $this->auto->orderBy('nickname')->get($columns);
+    if ($list instanceof Collection) {
+      $i = 0;
+      foreach ($list as $key => $server) {
+        $this->instanceList[$i]['nickname'] = $server->nickname;
+        $this->instanceList[$i]['instance_id'] = $server->instance_id;
+        $this->instanceList[$i]['description'] = $server->description;
+        $this->instanceList[$i]['terminable'] = $server->terminable;
+        $this->instanceList[$i]['stop_at'] = $server->stop_at;
+        $this->instanceList[$i]['private_ip'] = $server->private_ip;
+        $this->instanceList[$i]['state'] = $server->state;
+        $i++;
+      }
+    } else {
+        $this->instanceList = $list;
+    }
     $this->normalize();
     $this->checkManuals();
     $this->set_state_j();

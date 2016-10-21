@@ -19,7 +19,7 @@ class CreateManualsTable extends Migration
             $table->text('nickname');       //  サーバーのニックネーム
             $table->timestamps();           //  レコードのタイムスタンプ
 
-            $table->index('t_date', 'instance_id'); //  複合インデックス
+            $table->index(['t_date', 'instance_id']); //  複合インデックス
         });
     }
 
