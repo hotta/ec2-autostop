@@ -11,7 +11,7 @@
 <table class='table table-striped custom-va'>
 <thead>
   <tr>
-    <th class="server_name">サーバー名</th>
+    <th class="server_name" scope="row">サーバー名</th>
     <th class="server_role">役割</th>
     <th class="server_status" colspan="2">稼働状況</th>
     <th class="server_stop"   colspan="2">本日の停止予定</th>
@@ -27,7 +27,7 @@
   <tr class="warning">
   @endif
 {{-- サーバー名 --}}
-    <td scope="row">{{ $s['nickname'] }}</td>
+    <td>{{ $s['nickname'] }}</td>
 {{-- 役割 --}}
     <td>{{ $s['description'] }}</td>
 {{-- 稼働状況 --}}
