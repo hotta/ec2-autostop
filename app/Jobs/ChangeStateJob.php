@@ -1,5 +1,13 @@
 <?php
-
+//
+//  ジョブの動作
+//  1.crontab で schedule:run が動いていると、ジョブは自動的に処理される
+//  2.schedule:run が動いていない場合、以下の２パターンがある：
+//    2.1. queue:work １回につき、１件のジョブ処理される
+//    2.2. queue:listen はフォアグラウンドで動作し、継続的に処理を行う
+//    2.3. いずれも動かさない場合、jobs テーブルにキューが溜まっていく
+//         ※ unittest 実施時は 2.3 の状態で行うこと。
+//
 namespace App\Jobs;
 
 use App\Jobs\Job;
