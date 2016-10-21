@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Ec2Factory;
-use App\Manual;
 use Illuminate\Support\Facades\Artisan;
+use Symfony\Component\Console\Input\InputOption;
 
 class Ec2AutostopCommand extends Ec2Command
 {
@@ -24,12 +24,11 @@ class Ec2AutostopCommand extends Ec2Command
   protected $description = 'インスタンスの自動停止制御';
 
   /**
-   * 対象インスタンスの情報（persistent=false なものすべて）
+   * 冗長表示モード
    *
-   * @var Array
-   * @contains nickname, private_ip, state, instance_id
+   * @var bool
    */
-  protected $instanceInfoAll = [];
+  protected $verbose = false;
 
   /**
    * コマンドインスタンスの生成
@@ -38,7 +37,7 @@ class Ec2AutostopCommand extends Ec2Command
    */
   public function __construct()
   {
-      parent::__construct();
+    parent::__construct();
   }
 
   /**
@@ -49,26 +48,44 @@ class Ec2AutostopCommand extends Ec2Command
    */
   public function handle()
   {
+    if ($this->getOutput()->isVerbose()) {
+      $this->verbose = true;
+    }
     $ec2 = new Ec2Factory;
-    $manual = new Manual;
     $ec2->get();
     $list = $ec2->get_instanceList();
     $today = date('Y-m-d');
     foreach ($list as $instance)  {
-      if ($instance['terminable'] != 'true' ||
-          $instance['state'] != 'running'   ||
-         !preg_match('/^\d+:\d+(:\d+)?$/', $instance['stop_at'])) {
+      $nickname = $instance['nickname'];
+      if (!$instance['terminable'])  {
+        if ($this->verbose) {
+          $this->info($nickname . ' is not terminable. Skipping..');
+        }
+        continue;
+      }
+      if ($instance['state'] != 'running')  {
+        if ($this->verbose) {
+          $this->info($nickname . ' is not runnging. Skipping..');
+        }
+        continue;
+      }
+      if (!preg_match('/^\d+:\d+(:\d+)?$/', $instance['stop_at'])) {
+        if ($this->verbose) {
+          $this->info(sprintf("%s: stop_at=\"%s\". Skipping..",
+            $nickname, $instance['stop_at']));
+        }
         continue;
       }
       $stop_at = strtotime($today . ' ' . $instance['stop_at']);
       if ($stop_at < time())  {
-        $entry = $manual->where([
-                            [ 't_date',   $today ],
-                            [ 'nickname', $instance['nickname'] ],
-                          ])->first();
-       if (!$entry)  {
-          Artisan::call('ec2:stop', [ '-i' => $instance['instance_id'] ]);
-       }
+        Artisan::call('ec2:stop', [ '-i' => $instance['instance_id'] ]);
+        if ($this->verbose) {
+          $this->info($nickname . ' Stopped.');
+        }
+      } else  {
+        if ($this->verbose) {
+          $this->info($nickname . ' stop_at > now. Skipping...');
+        }
       }
     }
   }
