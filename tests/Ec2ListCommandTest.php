@@ -34,7 +34,7 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
   public function testEc2ListCommandWithoutArguments()
   {
     $output = $this->execute();
-    $this->assertContains('shutting-down', trim($output));
+    $this->assertContains('running', trim($output));
   }
 
   /**

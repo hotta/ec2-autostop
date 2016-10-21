@@ -9,8 +9,8 @@ require_once 'Ec2CommandTestCase.php';
 
 class Ec2StartCommandTest extends Ec2CommandTestCase
 {
-  const NICKNAME    = 'dev-dummy1';
-  const INSTANCE_ID = 'i-dev-dummy1';
+  const NICKNAME    = 'dev1';
+  const INSTANCE_ID = 'i-dev1';
 
   private $fake;
 

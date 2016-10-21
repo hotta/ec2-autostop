@@ -22,7 +22,7 @@ class FakeEc2 extends Model
   public $timestamps = false;             //  自動更新のタイムスタンプ項目あり
 
   /**
-   * EC2 インスタンスの状態変更
+   * EC2 インスタンスの状態変更（テスト用）
    *
    * @param  string  $instance_id
    * @param  string  $state
@@ -39,15 +39,40 @@ class FakeEc2 extends Model
   }
 
   /**
-   * クエリーに "order by" 句を追加する
+   * 「終了可能」フラグの変更（テスト用）
    *
-   * @param  string  $column
-   * @param  string  $direction
-   * @return Illuminate\Database\Query\Builder
+   * @param  string  $instance_id
+   * @param  bool    $state
+   * @return void
    */
-  public function orderBy($column, $direction = 'asc')
+  public function changeTerminable($instance_id, $state = true)
   {
-    return parent::orderBy($column);
+    $ec2 = $this->find($instance_id);
+    if (!$ec2)  {
+      throw new RuntimeException('インスタンスが未登録');
+    }
+    $ec2->attributes['terminable'] = $state;
+    $ec2->save();
+  }
+
+  /**
+   * 終了予定時刻の変更（テスト用）
+   *
+   * @param  string  $instance_id
+   * @param  string  $time
+   * @return void
+   */
+  public function changeStopAt($instance_id, $time = null)
+  {
+    $ec2 = $this->find($instance_id);
+    if (!$ec2)  {
+      throw new RuntimeException('インスタンスが未登録');
+    }
+    if (!$time) {
+      $time = date('H:i:0', time() - 60); //  現在時刻の１分前
+    }
+    $ec2->attributes['stop_at'] = $time;
+    $ec2->save();
   }
 
   /**
@@ -69,7 +94,8 @@ class FakeEc2 extends Model
     }
     $ec2->attributes['state'] = 'pending';             //  起動処理中へ
     $ec2->save();
-    $this->dispatch(new ChangeStateJob($instance_id, 'running', 30));
+    //  10秒後に running に遷移
+    $this->dispatch(new ChangeStateJob($instance_id, 'running', 10));
   }
 
   /**
@@ -91,7 +117,8 @@ class FakeEc2 extends Model
     }
     $ec2->attributes['state'] = 'stopping';             //  停止処理中へ
     $ec2->save();
-    $this->dispatch(new ChangeStateJob($instance_id, 'stopped', 30));
+    //  10秒後に stopped に遷移
+    $this->dispatch(new ChangeStateJob($instance_id, 'stopped', 10));
   }
 
   /**
@@ -116,22 +143,7 @@ class FakeEc2 extends Model
       throw new RuntimeException('インスタンスの状態が実行中／停止済み以外');
     }
     $ec2->save();
-    $this->dispatch(new ChangeStateJob($instance_id, 'running', 30));
+    //  10秒後に running に遷移
+    $this->dispatch(new ChangeStateJob($instance_id, 'running', 10));
   }
-
-  /**
-   * インスタンス一覧の取得
-   *
-   * @return array
-   */
-  public function get()
-  {
-    $ec2 = $this->orderBy('nickname')->get();
-    $list = [];
-    foreach ($ec2 as $item) {
-      $list[] = $item->attributes;
-    }
-    return $list;
-  }
-
 }
