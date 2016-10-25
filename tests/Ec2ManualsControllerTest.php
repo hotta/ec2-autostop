@@ -65,7 +65,7 @@ class Ec2ManualsControllerTest extends Ec2TestCase
          ->seePageIs('/')         //  ここに戻って
          ->see('停止処理中')      //  これが表示されて
          ->dontSee($one_hour_after)
-         ->see('手動モードへ');
+         ->see('手動モード');
   }
 
 } //  class Ec2ManualsControllerTest extends TestCase
