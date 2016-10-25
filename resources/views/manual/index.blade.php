@@ -39,8 +39,8 @@
         id="stop_{{ $s['instance_id'] }}" 
         action="/manual/stop/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <a href="#" data-id="{{ $s['instance_id'] }}" 
-          class="btn btn-danger" onclick="Stop_Run(this)">停止</a>
+        <button data-id="{{ $s['instance_id'] }}" 
+          class="btn btn-danger" onclick="Stop_Run(this)">停止</button>
       </form>
     </td>
   @elseif ($s['state'] == 'stopped')

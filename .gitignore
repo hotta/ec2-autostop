@@ -33,7 +33,6 @@ database/*
 !database/seeds/
 gulpfile.js
 package.json
-phpunit.xml
 !README.md
 public/*
 !public/css/

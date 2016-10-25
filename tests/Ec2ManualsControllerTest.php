@@ -48,6 +48,9 @@ class Ec2ManualsControllerTest extends Ec2TestCase
   /**
    * 「停止」ボタンを押すとインスタンスを停止する
    *
+   *  注意！crontab で schedule:run が動いていると、バックグラウンドで
+   *  状態遷移が起こってテストに失敗するので、コメントアウトしてから行うこと。
+   *
    */
   public function testEc2ManualsPressStop()
   {
@@ -58,12 +61,11 @@ class Ec2ManualsControllerTest extends Ec2TestCase
     $buttonText = 'stop_' . self::INSTANCE_ID;
     $post_to = '/manual/stop/' . self::INSTANCE_ID . '/' . self::NICKNAME;
     $this->visit('/')             //  ここにアクセスして
-//       ->click('停止')->submitForm($buttonText) //  これでは動かない
-         ->post($post_to)
-         ->seePageIs('/')
-         ->see('停止処理中')
+         ->press('停止')          //  これを押したら
+         ->seePageIs('/')         //  ここに戻って
+         ->see('停止処理中')      //  これが表示されて
          ->dontSee($one_hour_after)
-         ->see('手動モードへ');
+         ->see('手動モード');
   }
 
 } //  class Ec2ManualsControllerTest extends TestCase
