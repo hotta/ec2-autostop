@@ -68,15 +68,21 @@ $ ./artisan ec2:list （スタブ利用時の出力例）
 
 Laravel のスケジュール機能は使わないで単発コマンドのみで制御することを想定しているので、以下のようになります。
 
-> ARTISAN='php /var/www/larave/artisan'
+```crontab
+ARTISAN='php /var/www/larave/artisan'
+# 平日の朝に起動（起動時刻は cron で設定）
+30 8 * * 1-5 $ARTISAN ec2:start -i dev1
+0 9 * * 1-5 $ARTISAN ec2:start -i dev2
+# 平日の指定時刻に停止（手動モードでない場合のみ。停止時刻はタグで設定）
+1,11,21,31,41,51 15-23 * * 1-5 $ARTISAN ec2:autostop
+```
 
-> # 平日の朝に起動（起動時刻は cron で設定）
+# ec2:autostop コマンドの機能概要
 
-> 30 8 * * 1-5 $ARTISAN ec2:start -i dev1
+- インスタンス一覧のうち、Terminable=true のものだけを対象とする
+- 動作中のインスタンスのうち、現在時刻が stop_at を過ぎているものは停止する
+- ただし「手動モード」のインスタンス(*1) については停止の対象としない
+  - (*1) manualsレコードが存在するもの
 
-> 0 9 * * 1-5 $ARTISAN ec2:start -i dev2
 
-> # 平日の指定時刻に停止（手動モードでない場合のみ。停止時刻はタグで設定）
-
-> 1,11,21,31,41,51 15-23 * * 1-5 $ARTISAN ec2:autostop
 
