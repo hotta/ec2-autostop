@@ -168,7 +168,7 @@ class Ec2Factory
         if (!isset($this->instanceList[$i][$key])) {
           \Log::error(sprintf("%s::%s() called. '%s' for '%s' not set.",
             __CLASS__, __METHOD__, studly_case($key), 
-            $this->instanceList[$i]['nickname']));
+            $this->instanceList[$i]['instance_id']));
           abort(503);  //  必須パラメーター
         }
       }

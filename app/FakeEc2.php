@@ -22,6 +22,40 @@ class FakeEc2 extends Model
   public $timestamps = false;             //  自動更新のタイムスタンプ項目あり
 
   /**
+   * EC2 インスタンスの名称変更（テスト用）
+   *
+   * @param  string  $instance_id
+   * @param  string  $nickname
+   * @return void
+   */
+  public function changeNickname($instance_id, $nickname = null)
+  {
+    $ec2 = $this->find($instance_id);
+    if (!$ec2)  {
+      throw new RuntimeException('インスタンスが未登録');
+    }
+    $ec2->attributes['nickname'] = $nickname;
+    $ec2->save();
+  }
+
+  /**
+   * EC2 インスタンスの説明文言変更（テスト用）
+   *
+   * @param  string  $instance_id
+   * @param  string  $description
+   * @return void
+   */
+  public function changeDescription($instance_id, $description = null)
+  {
+    $ec2 = $this->find($instance_id);
+    if (!$ec2)  {
+      throw new RuntimeException('インスタンスが未登録');
+    }
+    $ec2->attributes['description'] = $description;
+    $ec2->save();
+  }
+
+  /**
    * EC2 インスタンスの状態変更（テスト用）
    *
    * @param  string  $instance_id
@@ -45,7 +79,7 @@ class FakeEc2 extends Model
    * @param  bool    $state
    * @return void
    */
-  public function changeTerminable($instance_id, $state = true)
+  public function changeTerminable($instance_id, $state = null)
   {
     $ec2 = $this->find($instance_id);
     if (!$ec2)  {
@@ -67,9 +101,6 @@ class FakeEc2 extends Model
     $ec2 = $this->find($instance_id);
     if (!$ec2)  {
       throw new RuntimeException('インスタンスが未登録');
-    }
-    if (!$time) {
-      $time = date('H:i:0', time() - 60); //  現在時刻の１分前
     }
     $ec2->attributes['stop_at'] = $time;
     $ec2->save();
