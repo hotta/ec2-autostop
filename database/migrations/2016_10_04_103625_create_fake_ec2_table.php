@@ -13,12 +13,14 @@ class CreateFakeEc2Table extends Migration
     public function up()
     {
         Schema::create('fake_ec2', function (Blueprint $table) {
-            $table->text('nickname');       //  サーバーのニックネーム
+            $table->text('nickname')        //  サーバーのニックネーム
+                  ->nullable();
             $table->text('instance_id');    //  インスタンスID
-            $table->text('description');    //  説明
+            $table->text('description')     //  説明
+                  ->nullable();
             $table->text('terminable')      //  終了可能
                   ->nullable();
-            $table->time('stop_at')         //  既定の停止時刻
+            $table->text('stop_at')         //  既定の停止時刻
                   ->nullable();
             $table->ipAddress('private_ip');
             $table->enum('state', [         //  サーバーの動作状態
