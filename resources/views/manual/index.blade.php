@@ -49,7 +49,7 @@
         id="start_{{ $s['instance_id'] }}" 
         action="/manual/start/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <a href="#" data-id="{{ $s['instance_id'] }}" 
+        <button data-id="{{ $s['instance_id'] }}" 
           class="btn btn-success" onclick="Start(this)">起動</a>
       </form>
     </td>
@@ -73,7 +73,7 @@
         id="manual_{{ $s['instance_id'] }}" 
         action="/manual/to_manual/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <a href="#" data-id="{{ $s['instance_id'] }}" 
+        <button data-id="{{ $s['instance_id'] }}" 
           class="btn btn-warning" onclick="toManual(this)">手動モードへ</a>
       </form>
     </td>
