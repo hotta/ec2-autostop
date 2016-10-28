@@ -1,6 +1,7 @@
 # 概要
 
-AWS のインスタンスの一覧表示や起動／停止を行います。基本は Web 画面で操作を行いますが、一部の動作は artisan コマンドでも行えます。
+AWS のインスタンスの一覧表示や起動／停止を行います。
+基本は Web 画面で操作を行いますが、一部の動作は artisan コマンドでも行えます。
 
 # ベース環境
 
@@ -19,11 +20,12 @@ AWS のインスタンスの一覧表示や起動／停止を行います。基�
 ```bash
 $ git clone git@github.com:hotta/laravel-aws.git
 $ cp -rp laravel-aws/* $LARAVEL_HOME
-$ cp -rp laravel-aws/.??* $LARAVEL_HOME
+$ cp -rp laravel-aws/.env.default $LARAVEL_HOME/.env
 $ cd $LARAVEL_HOME
-$ cp .env.default .env
-$ vi .env （必要な変更を行う）
+$ vi .env （必要な変更を行う - 後述）
 $ touch database/database.sqlite（デフォルトの SQLite を使う場合）
+$ sudo chown -R nginx .
+$ sudo chmod -R 777 bootstrap storage
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
@@ -74,7 +76,7 @@ ARTISAN='php /var/www/larave/artisan'
 30 8 * * 1-5 $ARTISAN ec2:start -i dev1
 0 9 * * 1-5 $ARTISAN ec2:start -i dev2
 # 平日の指定時刻に停止（手動モードでない場合のみ。停止時刻はタグで設定）
-1,11,21,31,41,51 15-23 * * 1-5 $ARTISAN ec2:autostop
+1-51/10 15-23 * * 1-5 $ARTISAN ec2:autostop
 ```
 
 # ec2:autostop コマンドの機能概要
@@ -84,5 +86,13 @@ ARTISAN='php /var/www/larave/artisan'
 - ただし「手動モード」のインスタンス(*1) については停止の対象としない
   - (*1) manualsレコードが存在するもの
 
+# .env 設定内容（アプリケーション定義のもの）
 
-
+| シンボル名            | 設定内容          | 設定値                                      |
+|:----------------------|:------------------|:--------------------------------------------|
+| APP_ROUTE_URL	        | http://FQDN       | サービスを提供するURL                       | 
+| AWS_EC2_STUB          | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
+| AWS_REGION            | ap-northeast-1    | 使用するリージョン                          | 
+| AWS_ACCESS_KEY_ID     | Access Key        | (AMIロールが付与されていない場合に指定）    | 
+| AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
+| GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
