@@ -40,8 +40,7 @@ public/*
 nbproject/
 readme.md
 resources/*
-!resources/layouts/
-!resources/manual/
+!resources/views/
 server.php
 storage/
 tests/TestCase.php
