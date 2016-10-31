@@ -199,7 +199,8 @@ class Ec2Factory
     $collection = collect([ 'pending', 'running' ]);
 
     for ($i=0; $i<count($this->instanceList); $i++)  {
-      if (!isset($this->instanceList[$i]['stop_at'])) {
+      if (!isset($this->instanceList[$i]['stop_at'])  ||
+        $this->instanceList[$i]['stop_at'] === '') {
         $this->instanceList[$i]['stop_at'] = '';
       } else if (!preg_match('/^\d+:\d+(:\d+)?$/', 
           $this->instanceList[$i]['stop_at']))  {
