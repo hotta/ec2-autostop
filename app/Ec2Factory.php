@@ -158,6 +158,8 @@ class Ec2Factory
    */
   private function normalize_mandatory()  {
 
+    $collection = collect([ 'terminating', 'terminated' ]);
+
     for ($i=0; $i<count($this->instanceList); $i++)  {
       foreach ([ 
         'nickname',     //  タグ名
@@ -165,6 +167,9 @@ class Ec2Factory
         'instance_id',  //  AWS API 戻り値
         'private_ip'    //  AWS API 戻り値
       ] as $key)  {
+        if ($collection->contains($this->instanceList[$i]['state']))  {
+          continue;     //  削除中／削除済み
+        }
         if (!isset($this->instanceList[$i][$key])) {
           \Log::error(sprintf("%s::%s() called. '%s' for '%s' not set.",
             __CLASS__, __METHOD__, studly_case($key), 
