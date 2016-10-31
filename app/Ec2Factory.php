@@ -202,9 +202,9 @@ class Ec2Factory
       if (!isset($this->instanceList[$i]['stop_at'])  ||
         $this->instanceList[$i]['stop_at'] === '') {
         $this->instanceList[$i]['stop_at'] = '';
-      } else if (!preg_match('/^[12]?[0-9]:[0-5]?[0-9](:[0-5]?[0-9])$/', 
+      } else if (!preg_match('/^[12]?[0-9]:[0-5]?[0-9](:[0-5]?[0-9])?$/', 
           $this->instanceList[$i]['stop_at']))  {
-          \Log::error(sprintf("stop_at format error : %s", 
+          \Log::error(sprintf("stop_at format error : \"%s\"", 
             $this->instanceList[$i]['stop_at']));
           abort(503);  //  必須パラメーター
       }
