@@ -18,8 +18,8 @@ class ManualsController extends Controller
     return view('manual.index')
       ->with('timestamp', date('Y-m-d H:i:s'))
       ->with('servers', $servers)
-      ->with('stub_mode', 
-        env('AWS_EC2_STUB', false) ? 'スタブ動作中' : null);
+      ->with('ec2_emulation_mode', 
+        env('EC2_EMULATION', false) ? 'エミュレーター動作中' : null);
   }
 
   /**
