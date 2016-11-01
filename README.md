@@ -35,7 +35,7 @@ $ ./artisan | grep ec2
   ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
 $ ./artisan db:seed
-$ ./artisan ec2:list （スタブ利用時の出力例）
+$ ./artisan ec2:list （エミュレーター利用時の出力例）
 
 +------------+-------------+---------+--------------+
 | Nickname   | Private IP  | Status  | Instance ID  |
@@ -55,7 +55,7 @@ $ ./artisan ec2:list （スタブ利用時の出力例）
 
 - AWS への API リクエスト権限のない（AMI ロールを付与されていない）ホストから実行する場合、AWS_ACCESS_KEY_ID と AWS_SECRET_ACCESS_KEY を追加
 - 東京リージョン利用の場合、 AWS_REGION=ap-northeast-1 を追加
-- AWS_EC2_STUB を false に変更またはコメントアウト
+- EC2_EMULATION を false に変更またはコメントアウト
 
 ## 各インスタンスに設定するべきタグ
 
@@ -91,7 +91,7 @@ ARTISAN='php /var/www/larave/artisan'
 | シンボル名            | 設定内容          | 設定値                                      |
 |:----------------------|:------------------|:--------------------------------------------|
 | APP_ROUTE_URL	        | http://FQDN       | サービスを提供するURL                       | 
-| AWS_EC2_STUB          | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
+| EC2_EMULATION          | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
 | AWS_REGION            | ap-northeast-1    | 使用するリージョン                          | 
 | AWS_ACCESS_KEY_ID     | Access Key        | (AMIロールが付与されていない場合に指定）    | 
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 

@@ -16,7 +16,7 @@ class Ec2TestCase extends TestCase
     parent::setUp();
     $this->artisan('migrate:refresh');//  テーブル作り直し(database/migrations)
     $this->seed();                    //  テストデータ投入(database/seeds)
-    putenv('AWS_EC2_STUB=true');
+    putenv('EC2_EMULATION=true');
   } //  Ec2TestCase :: setUp()
 
 } //  class Ec2TestCase extends TestCase

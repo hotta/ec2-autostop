@@ -4,8 +4,8 @@
 
 @section('content')
 <h1>サーバー起動／停止制御</h1>
-@if ($stub_mode)
-  <button class="btn btn-danger" type="button">{{ $stub_mode}}</button>
+@if ($ec2_emulation_mode)
+  <button class="btn btn-danger" type="button">{{ $ec2_emulation_mode}}</button>
 @endif
 <h5 class='current_timestamp'>{{ $timestamp}} 現在</h5>
 <table class='table table-striped custom-va'>

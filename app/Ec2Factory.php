@@ -37,7 +37,7 @@ class Ec2Factory
    */
   public function __construct()
   {
-    if (env('AWS_EC2_STUB')) {
+    if (env('EC2_EMULATION', false)) {
       $this->auto = new FakeEc2;    //  モデルでシミュレート
     } else  {
       $this->auto = new Ec2Ctrl;    //  AWS API をコール
