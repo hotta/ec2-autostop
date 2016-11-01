@@ -6,6 +6,7 @@ use Illuminate\Support;
 use App\FakeEc2;
 use App\Ec2Ctrl;
 use Illuminate\Database\Eloquent\Collection as Collection;
+use RuntimeException;
 
 class Ec2Factory
 {
@@ -142,19 +143,29 @@ class Ec2Factory
   /**
    * 属性データの正規化
    *
-   * @return void
+   * @return true if secceeded
    */
   private function normalize()  {
-    $this->normalize_mandatory();
+    if (!$this->normalize_mandatory() ||
+        !$this->normalize_stop_at()) {
+      if (php_sapi_name() == 'cli')  {
+        $logfile = storage_path() . '/logs/laravel.log';
+          throw new RuntimeException(
+            sprintf('タグ設定エラー：%s で詳細を確認してください。', $logfile));
+        } else  {
+          abort(503);
+      }
+      return false;
+    }
     $this->normalize_description();
-    $this->normalize_stop_at();
     $this->normalize_terminable();
+    return  true;
   }
 
   /**
    * 属性データの正規化（必須項目）
    *
-   * @return void
+   * @return true if succeeded
    */
   private function normalize_mandatory()  {
 
@@ -171,19 +182,20 @@ class Ec2Factory
           continue;     //  削除中／削除済み
         }
         if (!isset($this->instanceList[$i][$key])) {
-          \Log::error(sprintf("%s::%s() called. '%s' for '%s' not set.",
-            __CLASS__, __METHOD__, studly_case($key), 
+          \Log::error(sprintf("%s(): '%s' for '%s' not set.",
+            __METHOD__, studly_case($key), 
             $this->instanceList[$i]['instance_id']));
-          abort(503);  //  必須パラメーター
+          return false;
         }
       }
     }
+    return true;
   }
 
   /**
    * 属性データの正規化（説明）
    *
-   * @return void
+   * @return true if succeeded
    */
   private function normalize_description()  {
 
@@ -192,12 +204,13 @@ class Ec2Factory
         $this->instanceList[$i]['description'] = '';
       }
     }
+    return true;
   }
 
   /**
    * 属性データの正規化（停止時刻）
    *
-   * @return void
+   * @return true if succeeded
    */
   private function normalize_stop_at()  {
 
@@ -207,16 +220,18 @@ class Ec2Factory
       if (!isset($this->instanceList[$i]['stop_at'])  ||
         $this->instanceList[$i]['stop_at'] === '') {
         $this->instanceList[$i]['stop_at'] = '';
-      } else if (!preg_match('/^[12]?[0-9]:[0-5]?[0-9](:[0-5]?[0-9])?$/', 
+      } else if (!preg_match('/^[012]?[0-9]:[0-5]?[0-9](:[0-5]?[0-9])?$/', 
           $this->instanceList[$i]['stop_at']))  {
-          \Log::error(sprintf("stop_at format error : \"%s\"", 
+          \Log::error(sprintf("Instance=%s : stop_at format error : \"%s\"", 
+            $this->instanceList[$i]['instance_id'],
             $this->instanceList[$i]['stop_at']));
-          abort(503);  //  必須パラメーター
+          return false;
       }
       if (! $collection->contains($this->instanceList[$i]['state']))  {
         $this->instanceList[$i]['stop_at'] = 'manual';
       }
     }
+    return  true;
   }
 
   /**
@@ -316,10 +331,12 @@ class Ec2Factory
     } else {
         $this->instanceList = $list;
     }
-    $this->normalize();
-    $this->checkManuals();
-    $this->set_state_j();
-    return $this;
+    if ($this->normalize()) {
+      $this->checkManuals();
+      $this->set_state_j();
+      return $this;
+    }
+    die('Abnormal end');
   }
 
 }
