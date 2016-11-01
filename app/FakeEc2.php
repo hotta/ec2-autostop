@@ -79,7 +79,7 @@ class FakeEc2 extends Model
    * @param  bool    $state
    * @return void
    */
-  public function changeTerminable($instance_id, $state = null)
+  public function changeTerminable($instance_id, $state)
   {
     $ec2 = $this->find($instance_id);
     if (!$ec2)  {
@@ -96,7 +96,7 @@ class FakeEc2 extends Model
    * @param  string  $time
    * @return void
    */
-  public function changeStopAt($instance_id, $time = null)
+  public function changeStopAt($instance_id, $time)
   {
     $ec2 = $this->find($instance_id);
     if (!$ec2)  {

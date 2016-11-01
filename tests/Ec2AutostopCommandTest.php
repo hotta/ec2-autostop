@@ -54,7 +54,8 @@ class Ec2AutostopCommandTest extends Ec2CommandTestCase
   {
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, false);
-    $this->fake->changeStopAt(self::INSTANCE_ID); //  現在時刻の１分前
+    $this->fake->changeStopAt(self::INSTANCE_ID,
+      date('H:i:00', time() - 60));     //  現在時刻の１分前
     $output = $this->execute([],
       [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
     $expect = self::NICKNAME . ' is not terminable. Skipping..';
@@ -68,7 +69,8 @@ class Ec2AutostopCommandTest extends Ec2CommandTestCase
   {
     $this->fake->changeState(self::INSTANCE_ID, 'stopping');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID); //  現在時刻の１分前
+    $this->fake->changeStopAt(self::INSTANCE_ID,
+      date('H:i:00', time() - 60));     //  現在時刻の１分前
     $output = $this->execute([],
       [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
     $expect = self::NICKNAME . ' is not runnging. Skipping..';
@@ -83,7 +85,7 @@ class Ec2AutostopCommandTest extends Ec2CommandTestCase
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
     $this->fake->changeStopAt(self::INSTANCE_ID, 
-      date('H:i:0', time() + 60));      //  現在時刻の１分後
+      date('H:i:00', time() + 60));     //  現在時刻の１分後
     $output = $this->execute([],
       [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
     $expect = self::NICKNAME . ' stop_at > now. Skipping..';
@@ -97,10 +99,98 @@ class Ec2AutostopCommandTest extends Ec2CommandTestCase
   {
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID); //  現在時刻の１分前
+    $this->fake->changeStopAt(self::INSTANCE_ID,
+      date('H:i:00', time() - 60));     //  現在時刻の１分前
     $output = $this->execute([],
       [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
     $expect = self::NICKNAME . ' Stopped.';
+    $this->assertContains($expect, trim($output));
+  }
+
+  /**
+   * terminable フォーマットエラー
+   */
+  public function testEc2AutostopWhenTerminableisInvalidThenSkip()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, 'INVALID');
+    $this->fake->changeStopAt(self::INSTANCE_ID,
+      date('H:i:00', time() - 60));     //  現在時刻の１分前
+    $output = $this->execute([],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+    $expect = self::NICKNAME . ' is not terminable. Skipping..';
+    $this->assertContains($expect, trim($output));
+  }
+
+  /**
+   * terminable is null
+   */
+  public function testEc2AutostopWhenTerminableisNullThenSkip()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, null);
+    $this->fake->changeStopAt(self::INSTANCE_ID,
+      date('H:i:00', time() - 60));     //  現在時刻の１分前
+    $output = $this->execute([],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+    $expect = self::NICKNAME . ' is not terminable. Skipping..';
+    $this->assertContains($expect, trim($output));
+  }
+
+  /**
+   * terminable is empty
+   */
+  public function testEc2AutostopWhenTerminableisEmptyThenSkip()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, '');
+    $this->fake->changeStopAt(self::INSTANCE_ID,
+      date('H:i:00', time() - 60));     //  現在時刻の１分前
+    $output = $this->execute([],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+    $expect = self::NICKNAME . ' is not terminable. Skipping..';
+    $this->assertContains($expect, trim($output));
+  }
+
+  /**
+   * stop_at is invalid
+   * @expectedException RuntimeException
+   * @expectedExceptionMessage タグ設定エラー：/var/www/laravel/storage/logs/laravel.log で詳細を確認してください。
+   */
+  public function testEc2AutostopWhenStopAtIsInvalidThenSkip()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, true);
+    $this->fake->changeStopAt(self::INSTANCE_ID, '9:3:61');
+    $output = $this->execute([],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+  }
+
+  /**
+   * stop_at is null
+   */
+  public function testEc2AutostopWhenStopAtIsNullThenSkip()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, true);
+    $this->fake->changeStopAt(self::INSTANCE_ID, null);
+    $output = $this->execute([],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+    $expect = self::NICKNAME . ': stop_at="". Skipping..';
+    $this->assertContains($expect, trim($output));
+  }
+
+  /**
+   * stop_at is empty
+   */
+  public function testEc2AutostopWhenStopAtIsEmptyThenSkip()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, true);
+    $this->fake->changeStopAt(self::INSTANCE_ID, '');
+    $output = $this->execute([],
+      [ 'verbosity' => OutputInterface::VERBOSITY_VERBOSE ]);
+    $expect = self::NICKNAME . ': stop_at="". Skipping..';
     $this->assertContains($expect, trim($output));
   }
 
