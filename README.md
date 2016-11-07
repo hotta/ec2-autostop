@@ -24,8 +24,9 @@ $ cp -rp laravel-aws/.env.default $LARAVEL_HOME/.env
 $ cd $LARAVEL_HOME
 $ vi .env （必要な変更を行う - 後述）
 $ touch database/database.sqlite（デフォルトの SQLite を使う場合）
+$ composer dump-autoload
 $ sudo chown -R nginx .
-$ sudo chmod -R 777 bootstrap storage
+$ sudo chmod -R a+w bootstrap/cache storage
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2

@@ -71,5 +71,5 @@ class FakeEc2TableSeeder extends Seeder
           'state'       => 'running',
         ]
       ]);
-  } //  FakeEc2TableSeeder :: run()
-} //  Class FakeEc2TableSeeder
+  }
+}
