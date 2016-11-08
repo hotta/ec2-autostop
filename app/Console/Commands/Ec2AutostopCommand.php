@@ -29,6 +29,7 @@ class Ec2AutostopCommand extends Ec2Command
    * @var bool
    */
   protected $verbose = false;
+  protected $veryVerbose = false;
 
   /**
    * コマンドインスタンスの生成
@@ -51,6 +52,9 @@ class Ec2AutostopCommand extends Ec2Command
     if ($this->getOutput()->isVerbose()) {
       $this->verbose = true;
     }
+    if ($this->getOutput()->isVeryVerbose()) {
+      $this->veryVerbose = true;
+    }
     $ec2 = new Ec2Factory;
     $ec2->get();
     $list = $ec2->get_instanceList();
@@ -58,19 +62,19 @@ class Ec2AutostopCommand extends Ec2Command
     foreach ($list as $instance)  {
       $nickname = $instance['nickname'];
       if (!$instance['terminable'])  {
-        if ($this->verbose) {
+        if ($this->veryVerbose) {
           $this->info($nickname . ' is not terminable. Skipping..');
         }
         continue;
       }
       if ($instance['state'] != 'running')  {
-        if ($this->verbose) {
+        if ($this->veryVerbose) {
           $this->info($nickname . ' is not runnging. Skipping..');
         }
         continue;
       }
       if (!preg_match('/^\d+:\d+(:\d+)?$/', $instance['stop_at'])) {
-        if ($this->verbose) {
+        if ($this->veryVerbose) {
           $this->info(sprintf("%s: stop_at=\"%s\". Skipping..",
             $nickname, $instance['stop_at']));
         }
@@ -80,10 +84,10 @@ class Ec2AutostopCommand extends Ec2Command
       if ($stop_at < time())  {
         Artisan::call('ec2:stop', [ '-i' => $instance['instance_id'] ]);
         if ($this->verbose) {
-          $this->info($nickname . ' Stopped.');
+          $this->info($nickname . ' を停止しました。');
         }
       } else  {
-        if ($this->verbose) {
+        if ($this->veryVerbose) {
           $this->info($nickname . ' stop_at > now. Skipping...');
         }
       }
