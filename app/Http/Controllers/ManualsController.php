@@ -15,7 +15,9 @@ class ManualsController extends Controller
     $ec2 = new Ec2Factory;
     $servers = $ec2->getTerminables();  //  停止可能インスタンス一覧の取得
 //  dd($servers);
+    $laravel = app();
     return view('manual.index')
+      ->with('version', $laravel::VERSION)
       ->with('timestamp', date('Y-m-d H:i:s'))
       ->with('servers', $servers)
       ->with('ec2_emulation_mode', 

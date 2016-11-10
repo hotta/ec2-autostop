@@ -33,3 +33,9 @@ th.server_status  {
 th.server_stop  {
   width:    30%;
 }
+p.remarks  {
+  text-align: left;
+}
+p.version  {
+  text-align: right;
+}

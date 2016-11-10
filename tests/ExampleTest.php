@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
     public function testBasicExample()
     {
         $this->visit('/')
-             ->dontSee('Laravel 5');
+             ->see('Laravel 5');
     }
 }

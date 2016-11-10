@@ -84,5 +84,11 @@
 @endforeach
 </tbody>
 </table>
-<p>{{ env('GUI_REMARKS', '') }}</p>
+<div class="row">
+  <div class="col-md-6">
+    <p class="remarks">{{ env('GUI_REMARKS', '') }}</p>
+  </div>
+  <div class="col-md-6">
+    <p class="version">Laravel {{ $version }}</p>
+  </div>
 @endsection
