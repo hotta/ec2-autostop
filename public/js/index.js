@@ -8,6 +8,8 @@ function  Start(e) {
   if (confirm("サーバーを起動します。\n" +
               "サーバーの停止は手動で行ってください。"))  {
     document.getElementById('start_' + e.dataset.id).submit();
+  } else {
+    window.alert('キャンセルされました');
   }
 }
 
@@ -16,6 +18,8 @@ function  Stop_Run(e) {
 
   if (confirm('サーバーを停止します。'))  {
     document.getElementById('stop_' + e.dataset.id).submit();
+  } else {
+    window.alert('キャンセルされました');
   }
 }
 
@@ -25,6 +29,7 @@ function  toManual(e) {
   if (confirm("本日の運用を手動モードに切り替えます。\n"
           +  '停止予定時刻は無効になります。'))  {
     document.getElementById('manual_' + e.dataset.id).submit();
+  } else {
+    window.alert('キャンセルされました');
   }
 }
-
