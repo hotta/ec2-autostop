@@ -39,8 +39,8 @@
         id="stop_{{ $s['instance_id'] }}" 
         action="/manual/stop/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <button data-id="{{ $s['instance_id'] }}" 
-          class="btn btn-danger" onclick="Stop_Run(this)">停止</button>
+        <button data-id="{{ $s['instance_id'] }}" class="btn btn-danger" 
+          onclick="Stop_Run(this); return false;">停止</button>
       </form>
     </td>
   @elseif ($s['state'] == 'stopped')
@@ -49,8 +49,8 @@
         id="start_{{ $s['instance_id'] }}" 
         action="/manual/start/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <button data-id="{{ $s['instance_id'] }}" 
-          class="btn btn-success" onclick="Start(this)">起動</a>
+        <button data-id="{{ $s['instance_id'] }}" class="btn btn-success" 
+          onclick="Start(this); return false;">起動</a>
       </form>
     </td>
   @else
@@ -73,8 +73,8 @@
         id="manual_{{ $s['instance_id'] }}" 
         action="/manual/to_manual/{{ $s['instance_id'] }}/{{ $s['nickname'] }}">
         {{ csrf_field() }}
-        <button data-id="{{ $s['instance_id'] }}" 
-          class="btn btn-warning" onclick="toManual(this)">手動モードへ</a>
+        <button data-id="{{ $s['instance_id'] }}" class="btn btn-warning" 
+        onclick="toManual(this); return false;">手動モードへ</a>
       </form>
     </td>
   @else
