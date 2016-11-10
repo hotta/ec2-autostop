@@ -44,6 +44,5 @@ resources/*
 server.php
 storage/
 tests/TestCase.php
-tests/ExampleTest.php
 vendor/
 nbproject/private/
