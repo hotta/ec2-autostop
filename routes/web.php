@@ -2,12 +2,12 @@
 
 /*
 |--------------------------------------------------------------------------
-| アプリケーションのルート
+| Webルート
 |--------------------------------------------------------------------------
 |
-| ここでアプリケーションのルートを全て登録することが可能です。
-| 簡単です。ただ、Laravelへ対応するURIと、そのURIがリクエスト
-| されたときに呼び出されるコントローラを指定してください。
+| このファイルはアプリケーションで処理するすべてのルートを定義する場所です。
+| クロージャやコントローラメソッドを使用し、レスポンスすべきURIを
+| Laravelへ指示するだけです。素晴らしい物を作ってください！
 |
 */
 
@@ -19,7 +19,7 @@ Route::get('/', [
 Route::get('/public/index.php', 'ManualsController@index');
 Route::post('/manual/start/{instance_id}/{nickname}',
   'ManualsController@start');
-Route::post('/manual/stop/{instance_id}/{nickname}', 
+Route::post('/manual/stop/{instance_id}/{nickname}',
   'ManualsController@stop');
-Route::post('/manual/to_manual/{instance_id}/{nickname}', 
+Route::post('/manual/to_manual/{instance_id}/{nickname}',
   'ManualsController@to_manual');
