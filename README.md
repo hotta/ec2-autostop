@@ -92,3 +92,5 @@ ARTISAN='php /var/www/larave/artisan'
 | AWS_ACCESS_KEY_ID     | Access Key        | (AMIロールが付与されていない場合に指定）    | 
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
+
+- AWS_* は、実際に AWS にアクセスする際にのみ必要。
