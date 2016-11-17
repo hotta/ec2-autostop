@@ -133,7 +133,7 @@ class Ec2ManualsControllerTest extends Ec2TestCase
   {
     $one_hour_after = date('H:i:00', time() + 3600); //  現在時刻の１時間後
     $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
+    $this->fake->changeDescription(self::INSTANCE_ID, null);
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
     $this->fake->changeStopAt(self::INSTANCE_ID, $one_hour_after);

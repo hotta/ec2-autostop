@@ -19,14 +19,14 @@ AWS のインスタンスの一覧表示や起動／停止を行います。
 
 ```bash
 $ git clone git@github.com:hotta/laravel-aws.git
-$ cp -rp laravel-aws/* $LARAVEL_HOME
+$ sudo cp -rp laravel-aws/* $LARAVEL_HOME
 $ cp -rp laravel-aws/.env.default $LARAVEL_HOME/.env
 $ cd $LARAVEL_HOME
 $ vi .env （必要な変更を行う - 後述）
-$ touch database/database.sqlite（デフォルトの SQLite を使う場合）
 $ composer dump-autoload
-$ sudo chown -R nginx .
 $ sudo chmod -R a+w bootstrap/cache storage
+$ sudo chmod +x artisan
+$ ./artisan key:generate
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
@@ -46,19 +46,14 @@ $ ./artisan ec2:list （エミュレーター利用時の出力例）
 +------------+-------------+---------+--------------+
 ```
 
+ここまで動いたら、ブラウザでアクセスできます。
+
 # スクリーンショット
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-# 実環境(AWS)に対して使用する場合
 
-## .envへの追加設定
-
-- AWS への API リクエスト権限のない（AMI ロールを付与されていない）ホストから実行する場合、AWS_ACCESS_KEY_ID と AWS_SECRET_ACCESS_KEY を追加
-- 東京リージョン利用の場合、 AWS_REGION=ap-northeast-1 を追加
-- EC2_EMULATION を false に変更またはコメントアウト
-
-## 各インスタンスに設定するべきタグ
+# 各インスタンスに設定するべきタグ
 
 | タグ名      | 設定内容        | 設定値                          |
 |:------------|:----------------|:--------------------------------|

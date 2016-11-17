@@ -1,4 +1,5 @@
 .env
+.env.example
 *.orig
 *.swp
 .gitattributes
@@ -12,7 +13,6 @@ app/Http/Controllers/*
 !app/Http/Controllers/ManualsController.php
 app/Http/Requests/*
 !app/Http/Requests/ManualRequest.php
-!app/Http/routes.php
 app/Jobs/*
 !app/Jobs/ChangeStateJob.php
 !app/Jobs/Ec2AutoStopJob.php
@@ -35,12 +35,16 @@ gulpfile.js
 package.json
 !README.md
 public/*
-!public/css/
-!public/js/
+!public/css/styles.js
+!public/js/index.js
 nbproject/
 readme.md
-resources/*
-!resources/views/
+resources/assets
+resources/lang
+resources/views/welcome.blade.php
+resources/views/vendor
+routes/api.php
+routes/console.php
 server.php
 storage/
 tests/TestCase.php
