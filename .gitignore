@@ -30,6 +30,8 @@ config/*
 !config/aws.php
 database/*
 !database/migrations/
+database/migrations/2014_10_12_000000_create_users_table.php
+database/migrations/2014_10_12_100000_create_password_resets_table.php
 !database/seeds/
 gulpfile.js
 package.json
@@ -50,3 +52,4 @@ storage/
 tests/TestCase.php
 vendor/
 nbproject/private/
+yarn.lock

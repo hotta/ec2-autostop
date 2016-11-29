@@ -1,29 +1,38 @@
 # 概要
 
-AWS のインスタンスの一覧表示や起動／停止を行います。
-基本は Web 画面で操作を行いますが、一部の動作は artisan コマンドでも行えます。
+このプログラムは AWS の EC2 インスタンスの一覧表示や起動／停止を行います。
+Web 画面で操作を行いますが、一部の動作は artisan コマンドでも行えます。
 
-# ベース環境
+デフォルトでは DB を使って EC2 の動作をエミュレートしますので、動作確認だけなら AWS の環境は必ずしも必要ではありません。
 
-- Vagrant + VirtualBox を使った CentOS7.x 環境の作成
-  - https://github.com/hotta/vagrant-cent72-box
-  - CentOS 7.x + epel + remi + git + ansible 2.x になります。
-- 上記を利用した Laravel 開発環境の環境
-  - https://github.com/hotta/laravel-centos7
-  - DB のデフォルト(SQLite)を変更する場合 
-    - /etc/ansible/host_vars/localhost-XXXXX.yml -> localhost.yml に設定
-  - php-7.x + nginx + php-fpm + laravel-5.2.x + php-sdk-php-laravel-3.0 になります。
-  - 上記手順を使った場合、$LARAVEL_HOME は /var/www/laravel になります。
+# 前提条件
+
+- ( Vagrant + VirtualBox + ) CentOS7.x + Laravel の環境
+  - https://github.com/hotta/laravel-centos7 の環境で動作を確認しています。
+  - 上記に従うと、php-7.x + nginx + php-fpm + DB + laravel-5.3.x + php-sdk-php-laravel-3.0 になり、$LARAVEL_HOME は /var/www/laravel になります。
+  - 典型的なインストール手順としては以下の通りです。
+
+```bash
+mkdir XXXX
+cd XXXXX
+vagrant box add bento/centos-7.2 --provider virtualbox
+vagrant init bento/centos-7.2 
+vagrant up
+vagrant ssh
+sudo yum -y install git epel-release
+sudo yum -y install ansible
+```
 
 # 環境構築手順
 
 ```bash
-$ git clone git@github.com:hotta/laravel-aws.git
-$ sudo cp -rp laravel-aws/* $LARAVEL_HOME
-$ cp -rp laravel-aws/.env.default $LARAVEL_HOME/.env
+$ git clone https://github.com/hotta/ec2-autostop.git
+$ sudo cp -rp ec2-autostop/* $LARAVEL_HOME
+$ cp -rp ec2-autostop/.env.default $LARAVEL_HOME/.env
 $ cd $LARAVEL_HOME
 $ vi .env （必要な変更を行う - 後述）
 $ composer dump-autoload
+$ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
 $ ./artisan key:generate
@@ -36,14 +45,19 @@ $ ./artisan | grep ec2
   ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
 $ ./artisan db:seed
-$ ./artisan ec2:list （エミュレーター利用時の出力例）
+$ ./artisan ec2:list （エミュレーションモード利用時）
 
-+------------+-------------+---------+--------------+
-| Nickname   | Private IP  | Status  | Instance ID  |
-+------------+-------------+---------+--------------+
-| dev-dummy1 | 172.16.0.8  | stopped | i-dev-dummy1 |
-| dev-dummy2 | 172.16.0.99 | stopped | i-dev-dummy2 |
-+------------+-------------+---------+--------------+
+-----------+-------------+---------+-------------+---------+-------+
+| Nickname  | Private IP  | Status  | Instance ID | Stop at | Term  |
++-----------+-------------+---------+-------------+---------+-------+
+| dev1      | 172.16.0.8  | running | i-dev1      | 14:00   | true  |
+| dev2      | 172.16.0.91 | running | i-dev2      | 15:00   | false |
+| dev3      | 172.16.0.92 | running | i-dev3      | 16:00   | true  |
+| dev4      | 172.16.0.93 | running | i-dev4      | 17:00   | false |
+| dev5      | 172.16.0.94 | running | i-dev5      | 18:00   | true  |
+| dev-test1 | 172.16.1.8  | running | i-dev-test1 |         | false |
+| dev-web1  | 172.16.0.8  | running | i-dev-web1  |         | false |
++-----------+-------------+---------+-------------+---------+-------+
 ```
 
 ここまで動いたら、ブラウザでアクセスできます。
@@ -77,10 +91,12 @@ ARTISAN='php /var/www/larave/artisan'
 
 # ec2:autostop コマンドの機能概要
 
-- インスタンス一覧のうち、Terminable=true のものだけを対象とする
-- 動作中のインスタンスのうち、現在時刻が stop_at を過ぎているものは停止する
-- ただし「手動モード」のインスタンス(*1) については停止の対象としない
-  - (*1) manualsレコードが存在するもの
+- 自分が保有するインスタンスのうち、以下の条件をすべて満たすものを停止する。
+  - Terminable=true のもの
+  - 動作中のもの
+  - 現在時刻が stop_at を過ぎているもの
+  - 「手動モード」でないもの
+    - 「手動モード」＝manuals レコードが存在するもの
 
 # .env 設定内容（アプリケーション定義のもの）
 
@@ -93,4 +109,4 @@ ARTISAN='php /var/www/larave/artisan'
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
 
-- AWS_* は、実際に AWS にアクセスする際にのみ必要。
+- AWS_*KEY* は、AMI ロールを持たない VM から EC2 を制御したい場合にのみ必要。
