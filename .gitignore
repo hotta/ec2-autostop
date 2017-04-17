@@ -23,8 +23,7 @@ app/Providers/*
 app/User.php
 artisan
 bootstrap/
-!composer.json
-composer.lock
+composer.*
 config/*
 !config/app.php
 !config/aws.php

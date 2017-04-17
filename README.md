@@ -9,28 +9,17 @@ Web 画面で操作を行いますが、一部の動作は artisan コマンド�
 
 - ( Vagrant + VirtualBox + ) CentOS7.x + Laravel の環境
   - https://github.com/hotta/laravel-centos7 の環境で動作を確認しています。
-  - 上記に従うと、php-7.x + nginx + php-fpm + DB + laravel-5.3.x + php-sdk-php-laravel-3.0 になり、$LARAVEL_HOME は /var/www/laravel になります。
-  - 典型的なインストール手順としては以下の通りです。
-
-```bash
-mkdir XXXX
-cd XXXXX
-vagrant box add bento/centos-7.2 --provider virtualbox
-vagrant init bento/centos-7.2 
-vagrant up
-vagrant ssh
-sudo yum -y install git epel-release
-sudo yum -y install ansible
-```
+  - 上記に従うと、php-7.x + nginx + php-fpm + DB(PostgreSQL) + laravel-5.4.x + php-sdk-php-laravel-3.0 になり、$LARAVEL_HOME は /var/www/laravel になります。
 
 # 環境構築手順
 
 ```bash
 $ git clone https://github.com/hotta/ec2-autostop.git
+$ export LARAVEL_HOME=/var/www/laravel
 $ sudo cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cp -rp ec2-autostop/.env.default $LARAVEL_HOME/.env
 $ cd $LARAVEL_HOME
-$ vi .env （必要な変更を行う - 後述）
+$ vi .env （必要なら変更を行う - 後述）。
 $ composer dump-autoload
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
@@ -102,6 +91,7 @@ ARTISAN='php /var/www/larave/artisan'
 
 | シンボル名            | 設定内容          | 設定値                                      |
 |:----------------------|:------------------|:--------------------------------------------|
+| DB_USERNAME  	        | vagrant           | ansible_user_id                             | 
 | APP_ROUTE_URL	        | http://FQDN       | サービスを提供するURL                       | 
 | EC2_EMULATION          | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
 | AWS_REGION            | ap-northeast-1    | 使用するリージョン                          | 
@@ -109,4 +99,4 @@ ARTISAN='php /var/www/larave/artisan'
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
 
-- AWS_*KEY* は、AMI ロールを持たない VM から EC2 を制御したい場合にのみ必要。
+- AWS_* は、AMI ロールを持たない VM から EC2 を制御したい場合にのみ必要。
