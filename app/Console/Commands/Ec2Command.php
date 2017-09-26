@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 use App\Ec2Factory;
 use InvalidArgumentException;
 
-class Ec2Command extends Command
+abstract class Ec2Command extends Command
 {
   /**
    * Ec2Factory クラスのインスタンス

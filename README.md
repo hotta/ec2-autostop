@@ -1,9 +1,9 @@
 # 概要
 
 このプログラムは AWS の EC2 インスタンスの一覧表示や起動／停止を行います。
-Web 画面で操作を行いますが、一部の動作は artisan コマンドでも行えます。
+基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
 
-デフォルトでは DB を使って EC2 の動作をエミュレートしますので、動作確認だけなら AWS の環境は必ずしも必要ではありません。
+デフォルトでは DB を使って EC2 の動作をエミュレートしますが、IAM ロールを持つインスタンス以外から実行する場合、IAM アカウント情報の設定が必要です。
 
 # 前提条件
 
@@ -16,15 +16,14 @@ Web 画面で操作を行いますが、一部の動作は artisan コマンド�
 ```bash
 $ git clone https://github.com/hotta/ec2-autostop.git
 $ export LARAVEL_HOME=/var/www/laravel
-$ sudo cp -rp ec2-autostop/* $LARAVEL_HOME
-$ cp -rp ec2-autostop/.env.default $LARAVEL_HOME/.env
+$ cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
-$ vi .env （必要なら変更を行う - 後述）。
-$ composer dump-autoload
+$ cp .env.default .env
+$ vi .env （IAM アカウント情報の設定を行う）
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
-$ ./artisan key:generate
+$ composer dump-autoload
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
@@ -95,8 +94,8 @@ ARTISAN='php /var/www/larave/artisan'
 | APP_ROUTE_URL	        | http://FQDN       | サービスを提供するURL                       | 
 | EC2_EMULATION          | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
 | AWS_REGION            | ap-northeast-1    | 使用するリージョン                          | 
-| AWS_ACCESS_KEY_ID     | Access Key        | (AMIロールが付与されていない場合に指定）    | 
+| AWS_ACCESS_KEY_ID     | Access Key        | (IAMロールが付与されていない場合に指定）    | 
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
 
-- AWS_* は、AMI ロールを持たない VM から EC2 を制御したい場合にのみ必要。
+- AWS_* は、IAM ロールを持たない VM から EC2 を制御したい場合にのみ必要。

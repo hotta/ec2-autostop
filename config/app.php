@@ -179,7 +179,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\Ec2ServiceProvider::class,
         Aws\Laravel\AwsServiceProvider::class,
-
     ],
 
     /*
