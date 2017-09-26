@@ -1,9 +1,9 @@
 # 概要
 
 このプログラムは AWS の EC2 インスタンスの一覧表示や起動／停止を行います。
-Web 画面で操作を行いますが、一部の動作は artisan コマンドでも行えます。
+基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
 
-デフォルトでは DB を使って EC2 の動作をエミュレートしますので、動作確認だけなら AWS の環境は必ずしも必要ではありません。
+デフォルトでは DB を使って EC2 の動作をエミュレートします。
 
 # 前提条件
 
@@ -17,13 +17,13 @@ Web 画面で操作を行いますが、一部の動作は artisan コマンド�
 $ git clone https://github.com/hotta/ec2-autostop.git
 $ export LARAVEL_HOME=/var/www/laravel
 $ sudo cp -rp ec2-autostop/* $LARAVEL_HOME
-$ cp -rp ec2-autostop/.env.default $LARAVEL_HOME/.env
 $ cd $LARAVEL_HOME
+$ cp .env.default .env
 $ vi .env （必要なら変更を行う - 後述）。
-$ composer dump-autoload
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
+$ composer dump-autoload
 $ ./artisan key:generate
 $ ./artisan migrate
 $ ./artisan | grep ec2
