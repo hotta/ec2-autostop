@@ -18,7 +18,7 @@ $ git clone https://github.com/hotta/ec2-autostop.git
 $ export LARAVEL_HOME=/var/www/laravel
 $ cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
-$ vi .env （IAM アカウント情報の設定を行う - 後述）
+$ vi .env （IAM アカウント情報などの設定を行う - 後述）
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
@@ -91,10 +91,8 @@ ARTISAN='php /var/www/larave/artisan'
 |:----------------------|:------------------|:--------------------------------------------|
 | DB_USERNAME  	        | vagrant           | ansible_user_id                             | 
 | APP_ROUTE_URL	        | http://FQDN       | サービスを提供するURL                       | 
-| EC2_EMULATION          | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
+| EC2_EMULATION         | true / false      | true の場合、AWSの動きをDBでシミュレートする| 
 | AWS_REGION            | ap-northeast-1    | 使用するリージョン                          | 
 | AWS_ACCESS_KEY_ID     | Access Key        | (IAMロールが付与されていない場合に指定）    | 
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
-
-- AWS_* は、IAM ロールを持たない VM から EC2 を制御したい場合にのみ必要。
