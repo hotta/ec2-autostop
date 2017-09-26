@@ -18,8 +18,7 @@ $ git clone https://github.com/hotta/ec2-autostop.git
 $ export LARAVEL_HOME=/var/www/laravel
 $ cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
-$ cp .env.default .env
-$ vi .env （IAM アカウント情報の設定を行う）
+$ vi .env （IAM アカウント情報の設定を行う - 後述）
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
