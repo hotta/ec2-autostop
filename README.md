@@ -18,7 +18,8 @@ $ git clone https://github.com/hotta/ec2-autostop.git
 $ export LARAVEL_HOME=/var/www/laravel
 $ cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
-$ vi .env （IAM アカウント情報などの設定を行う - 後述）
+$ vi .env （IAM アカウント等の設定を行う - 後述）
+$ touch storage/logs/laravel.log
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
@@ -45,6 +46,25 @@ $ ./artisan ec2:list （エミュレーションモード利用時）
 | dev-test1 | 172.16.1.8  | running | i-dev-test1 |         | false |
 | dev-web1  | 172.16.0.8  | running | i-dev-web1  |         | false |
 +-----------+-------------+---------+-------------+---------+-------+
+
+$ ./artisan ec2:autostop --help
+Usage:
+  ec2:autostop [options]
+
+Options:
+  -i, --instanceid=INSTANCEID  対象のインスタンスID
+      --nickname=NICKNAME      対象インスタンスのニックネーム（これらのいずれかを指定）
+  -h, --help                   Display this help message
+  -q, --quiet                  Do not output any message
+  -V, --version                Display this application version
+      --ansi                   Force ANSI output
+      --no-ansi                Disable ANSI output
+  -n, --no-interaction         Do not ask any interactive question
+      --env[=ENV]              The environment the command should run under
+  -v|vv|vvv, --verbose         Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Help:
+  インスタンスの自動停止制御
 ```
 
 ここまで動いたら、ブラウザでアクセスできます。
