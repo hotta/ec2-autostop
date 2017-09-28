@@ -9,13 +9,13 @@
 
 - ( Vagrant + VirtualBox + ) CentOS7.x + Laravel の環境
   - https://github.com/hotta/laravel-centos7 の環境で動作を確認しています。
-  - 上記に従うと、php-7.x + nginx + php-fpm + DB(PostgreSQL) + laravel-5.4.x + php-sdk-php-laravel-3.0 になり、$LARAVEL_HOME は /var/www/laravel になります。
+  - 想定環境：php-7.x + nginx + php-fpm + DB(PostgreSQL) + laravel-5.5.x + php-sdk-php-laravel-3.0
 
 # 環境構築手順
 
 ```bash
 $ git clone https://github.com/hotta/ec2-autostop.git
-$ export LARAVEL_HOME=/var/www/laravel
+$ echo 'export LARAVEL_HOME=/var/www/laravel' >> ~/.bashrc && . ~/.bashrc
 $ cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
 $ vi .env （IAM アカウント等の設定を行う - 後述）
@@ -73,6 +73,7 @@ Help:
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
+artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（終了可能）が true のインスタンスのみです。
 
 # 各インスタンスに設定するべきタグ
 
