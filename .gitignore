@@ -11,7 +11,7 @@ app/Providers/*
 app/User.php
 artisan
 bootstrap/
-composer.*
+composer.json
 config/*
 !config/app.php
 database/factories/
