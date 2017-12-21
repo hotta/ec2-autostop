@@ -12,6 +12,7 @@ app/User.php
 artisan
 bootstrap/
 composer.json
+composer.lock
 config/*
 !config/app.php
 database/factories/

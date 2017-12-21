@@ -23,7 +23,8 @@ $ touch storage/logs/laravel.log
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
-$ composer dump-autoload
+$ rm -rf composer.lock
+$ composer require aws/aws-sdk-php-laravel:~3.0
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
