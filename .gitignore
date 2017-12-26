@@ -39,10 +39,9 @@ routes/*
 server.php
 storage/
 tests/CreatesApplication.php
-tests/ExampleTest.php
 tests/TestCase.php
-tests/Feature/
-tests/Unit/
+tests/Feature/ExampleTest.php
+tests/Unit/ExampleTest.php
 vendor/
 webpack.mix.js
 yarn-error.log
