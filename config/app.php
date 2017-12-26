@@ -45,13 +45,13 @@ return [
     | アプリケーションURL
     |--------------------------------------------------------------------------
     |
-    | このURLはArtisanコマンドラインツールを使用する時に正しい
-    | URLを生成するために使用します。アプリケーションのルートのURLを設定してください。
+    | このURLはArtisanコマンドラインツールを使用する時に正しいURLを生成するために
+    | 使用します。アプリケーションのルートのURLを設定してください。
     | Artisanコマンドを実行する時に使用されます。
     |
     */
 
-    'url' => 'laravel53.local',
+    'url' => env('APP_URL', 'http://laravel.local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -68,11 +68,11 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | アプリケーションローカル設定
+    | アプリケーションロケール設定
     |--------------------------------------------------------------------------
     |
-    | アプリケーションローカルは翻訳サービスプロバイダーにより使用される
-    | デフォルトローカルを指定します。アプリケーションで提供するローカルを
+    | アプリケーションロケールは翻訳サービスプロバイダーにより使用される
+    | デフォルトロケールを指定します。アプリケーションで提供するロケールを
     | 自由に設定してください。
     |
     */
@@ -84,7 +84,7 @@ return [
     | アプリケーションフォールバック言語
     |--------------------------------------------------------------------------
     |
-    | フォールバック言語は現在のローカルが使用できない場合に、
+    | フォールバック言語は現在のロケールが使用できない場合に、
     | 代替として使われます。アプリケーション全体に対して用意されている
     | 言語フォルダーに対応するコードであればどれでも使用可能です。
     |
@@ -98,8 +98,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | このキーはIlluminate暗号化サービスで使用されます。ランダムな32文字を
-    | セットしないと安全ではありません。アプリケーションをデプロイ
-    | る前に、必ず変更してください。
+    | セットしないと安全ではありません。アプリケーションをデプロイする前に、
+    | 必ず変更してください。
     |
     */
 
@@ -112,11 +112,11 @@ return [
     | ログ設定
     |--------------------------------------------------------------------------
     |
-    | ここではアプリケーションのログ設定を指定します。Laravelは
-    | 初めから、Monolog PHPログライブラリーを使用しています。これは便利なように、
+    | ここではアプリケーションのログ設定を指定します。Laravelは初めから、
+    | Monolog PHPログライブラリーを使用しています。これは便利なように、
     | 強力でバリエーション豊かなログハンドラー／フォーマッターを提供しています。
     |
-    | 使用可能な設定： "single", "daily", "syslog", "errorlog"
+    | 使用可能な設定: "single", "daily", "syslog", "errorlog"
     |
     */
 
@@ -138,7 +138,7 @@ return [
     'providers' => [
 
         /*
-         * Laravelフレームワークサービスプロバイダー
+         * Laravel Framework Service Providers...
          */
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -167,10 +167,8 @@ return [
          * Package Service Providers...
          */
 
-        //
-
         /*
-         * アプリケーションサービスプロバイダー
+         * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -199,6 +197,7 @@ return [
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         'Blade' => Illuminate\Support\Facades\Blade::class,
+        'Broadcast' => Illuminate\Support\Facades\Broadcast::class,
         'Bus' => Illuminate\Support\Facades\Bus::class,
         'Cache' => Illuminate\Support\Facades\Cache::class,
         'Config' => Illuminate\Support\Facades\Config::class,
