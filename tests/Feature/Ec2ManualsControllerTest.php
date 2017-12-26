@@ -5,11 +5,13 @@
 //  ・デフォルトの phpunit.xml 
 //    - QUEUE_DRIVER=sync になっており、ジョブのキューイングが行われない。
 
+namespace Tests\Feature;
+
 use App\Console\Commands\Ec2AutostopCommand;
 use Symfony\Component\Console\Application;
 use App\FakeEc2;
-require_once 'Ec2TestCase.php';
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class Ec2ManualsControllerTest extends Ec2TestCase
 {

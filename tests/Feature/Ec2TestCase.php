@@ -1,8 +1,11 @@
 <?php
 
+namespace Tests\Feature;
+
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class Ec2TestCase extends TestCase
 {
@@ -14,8 +17,8 @@ class Ec2TestCase extends TestCase
   public function setUp()
   {
     parent::setUp();
-    $this->artisan('migrate:refresh');//  テーブル作り直し(database/migrations)
-    $this->seed();                    //  テストデータ投入(database/seeds)
+//  $this->artisan('migrate:refresh');//  テーブル作り直し(database/migrations)
+//  $this->seed();                    //  テストデータ投入(database/seeds)
     putenv('EC2_EMULATION=true');
   } //  Ec2TestCase :: setUp()
 

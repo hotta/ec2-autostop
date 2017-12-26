@@ -1,10 +1,11 @@
 <?php
 
+namespace Tests\Feature;
+
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-require_once 'Ec2TestCase.php';
 
 class Ec2CommandTestCase extends Ec2TestCase
 {

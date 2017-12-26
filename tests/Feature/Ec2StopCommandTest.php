@@ -1,11 +1,12 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Console\Commands\Ec2StopCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\FakeEc2;
-require_once 'Ec2CommandTestCase.php';
 
 class Ec2StopCommandTest extends Ec2CommandTestCase
 {

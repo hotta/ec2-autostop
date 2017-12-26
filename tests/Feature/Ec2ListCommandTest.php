@@ -1,9 +1,10 @@
 <?php
 
+namespace Tests\Feature;
+
 use App\Console\Commands\Ec2ListCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-require_once 'Ec2CommandTestCase.php';
 
 class Ec2ListCommandTest extends Ec2CommandTestCase
 {
