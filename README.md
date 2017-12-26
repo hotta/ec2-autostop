@@ -19,6 +19,7 @@ $ echo 'export LARAVEL_HOME=/var/www/laravel' >> ~/.bashrc && . ~/.bashrc
 $ cp -rp ec2-autostop/* $LARAVEL_HOME
 $ cd $LARAVEL_HOME
 $ vi .env （IAM アカウント等の設定を行う - 後述）
+（ローカルで模擬環境を構築する場合、最低でも EC2_EMULATION=true を指定すること）
 $ touch storage/logs/laravel.log
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
