@@ -2,12 +2,12 @@
 
 /*
 |--------------------------------------------------------------------------
-| Webルート
+| Web Routes
 |--------------------------------------------------------------------------
 |
-| このファイルはアプリケーションで処理するすべてのルートを定義する場所です。
-| クロージャやコントローラメソッドを使用し、レスポンスすべきURIを
-| Laravelへ指示するだけです。素晴らしい物を作ってください！
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
