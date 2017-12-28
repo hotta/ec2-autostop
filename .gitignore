@@ -38,7 +38,13 @@ routes/*
 !routes/web.php
 server.php
 storage/
+tests/Browser/Components/
+tests/Browser/ExampleTest.php
+tests/Browser/console/
+tests/Browser/Pages/
+tests/Browser/screenshots/
 tests/CreatesApplication.php
+tests/DuskTestCase.php
 tests/TestCase.php
 tests/Feature/ExampleTest.php
 tests/Unit/ExampleTest.php

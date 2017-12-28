@@ -23,7 +23,8 @@ $ touch storage/logs/laravel.log
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
-$ composer dump-autoload
+$ rm -rf composer.lock
+$ composer require aws/aws-sdk-php-laravel:~3.0
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
@@ -33,9 +34,6 @@ $ ./artisan | grep ec2
   ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
 $ ./artisan db:seed
-
-# 使い方
-
 $ ./artisan ec2:list 
 
 -----------+-------------+---------+-------------+---------+-------+
@@ -77,7 +75,7 @@ Help:
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（停止可能）が true のインスタンスのみです。
+artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（終了可能）が true のインスタンスのみです。
 
 # 各インスタンスに設定するべきタグ
 
@@ -107,10 +105,8 @@ ARTISAN='php /var/www/larave/artisan'
   - Terminable=true のもの
   - 動作中のもの
   - 現在時刻が stop_at を過ぎているもの
-  - 「手動モード」でないもの（＝自動停止モード）
-    - GUI 画面で「手動モードへ」を選択したインスタンスについては、その日の運用が「手動モード」に切り替わります。
-    - 「手動モード」のインスタンスは、利用者が管理画面で明示的に「停止」をクリックしない限り動作し続けます。
-    - 日をまたいだ場合、当該インスタンスは「自動停止モード」に戻ります。
+  - 「手動モード」でないもの
+    - 「手動モード」＝manuals レコードが存在するもの
 
 # .env 設定内容（アプリケーション定義のもの）
 
