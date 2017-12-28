@@ -1,9 +1,8 @@
 # 概要
 
-このプログラムは AWS の EC2 インスタンスの一覧表示や起動／停止を行います。
-基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
+このプログラムは AWS の EC2 インスタンスの起動／停止制御を行います。基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
 
-デフォルトでは DB を使って EC2 の動作をエミュレートしますが、IAM ロールを持つインスタンス以外から実行する場合、IAM アカウント情報の設定が必要です。
+IAM ロールを持つインスタンス以外で実行する場合、IAM アカウント情報の設定が必要です。AWS のアカウントがない場合でも、DB を使って EC2 の動作をエミュレートすることも可能です。
 
 # 前提条件
 
@@ -24,8 +23,7 @@ $ touch storage/logs/laravel.log
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
-$ rm -rf composer.lock
-$ composer require aws/aws-sdk-php-laravel:~3.0
+$ composer dump-autoload
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
@@ -35,7 +33,10 @@ $ ./artisan | grep ec2
   ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
 $ ./artisan db:seed
-$ ./artisan ec2:list （エミュレーションモード利用時）
+
+# 使い方
+
+$ ./artisan ec2:list 
 
 -----------+-------------+---------+-------------+---------+-------+
 | Nickname  | Private IP  | Status  | Instance ID | Stop at | Term  |
@@ -48,6 +49,7 @@ $ ./artisan ec2:list （エミュレーションモード利用時）
 | dev-test1 | 172.16.1.8  | running | i-dev-test1 |         | false |
 | dev-web1  | 172.16.0.8  | running | i-dev-web1  |         | false |
 +-----------+-------------+---------+-------------+---------+-------+
+（上記はエミュレーションモード利用時の表示）
 
 $ ./artisan ec2:autostop --help
 Usage:
@@ -75,7 +77,7 @@ Help:
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（終了可能）が true のインスタンスのみです。
+artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（停止可能）が true のインスタンスのみです。
 
 # 各インスタンスに設定するべきタグ
 
@@ -105,8 +107,10 @@ ARTISAN='php /var/www/larave/artisan'
   - Terminable=true のもの
   - 動作中のもの
   - 現在時刻が stop_at を過ぎているもの
-  - 「手動モード」でないもの
-    - 「手動モード」＝manuals レコードが存在するもの
+  - 「手動モード」でないもの（＝自動停止モード）
+    - GUI 画面で「手動モードへ」を選択したインスタンスについては、その日の運用が「手動モード」に切り替わります。
+    - 「手動モード」のインスタンスは、利用者が管理画面で明示的に「停止」をクリックしない限り動作し続けます。
+    - 日をまたいだ場合、当該インスタンスは「自動停止モード」に戻ります。
 
 # .env 設定内容（アプリケーション定義のもの）
 
