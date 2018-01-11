@@ -17,6 +17,7 @@ $ git clone https://github.com/hotta/ec2-autostop.git laravel
 $ cd laravel
 $ cp env.default .env
 $ composer install
+$ cd
 $ sudo rm -rf /var/www/laravel
 $ sudo mv laravel /var/www
 $ ln -s /var/www/laravel .
@@ -76,7 +77,7 @@ Help:
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（終了可能）が true のインスタンスのみです。
+artisan ec2:list ではすべてのインスタンスを表示します。Web インターフェイスで表示されるのは、インスタンスに設定されている Terminable（終了可能）タグの値が true のインスタンスだけです。
 
 # 各インスタンスに設定するべきタグ
 
