@@ -5,18 +5,16 @@
 //  ・デフォルトの phpunit.xml 
 //    - QUEUE_DRIVER=sync になっており、ジョブのキューイングが行われない。
 
-namespace Tests\Browser;
+namespace Tests\Feature;
 
 use Mockery;
-use Tests\DuskTestCase;
-use Laravel\Dusk\Browser;
 use App\Console\Commands\Ec2AutostopCommand;
 use Symfony\Component\Console\Application;
 use App\FakeEc2;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class Ec2ManualsControllerTest extends DuskTestCase
+class Ec2ManualsControllerTest extends Ec2TestCase
 {
   const NICKNAME    = 'dev1';
   const INSTANCE_ID = 'i-dev1';
@@ -68,22 +66,15 @@ class Ec2ManualsControllerTest extends DuskTestCase
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
       //  インスタンスの Stop_at （停止予定時刻）を１時間後にする
     $this->fake->changeStopAt(self::INSTANCE_ID, $this->time);
-    $mock = $this->mock;
 
-    $this->browse(function (Browser $browser) use ($mock) {
-      $browser
-        ->visit('/')                      //  ここにアクセスすると以下を表示
-        ->assertSee(self::NICKNAME)       //  サーバー名
-        ->assertSee('動作中')             //  稼働状況
-        ->assertSee('停止')               //  ボタン表示
-        ->assertSee($mock->scheduled()) //  本日の停止予定
-        ->assertSee('手動モードへ');      //  ボタン表示
-    });
-  } //  testEc2ManualsInit()
+    $this->get('/')     //  ここにアクセスすると以下を表示
+        ->assertSee(self::NICKNAME)           //  サーバー名
+        ->assertSee('動作中')                 //  稼働状況
+        ->assertSee('停止')                   //  ボタン表示
+        ->assertSee($this->mock->scheduled()) //  本日の停止予定
+        ->assertSee('手動モードへ');          //  ボタン表示
+  } //  Ec2ManualsControllerTest :: testEc2ManualsInit()
 
-}
-
-class Dummy {
   /**
    * 「停止」ボタンを押すと「停止処理中」に移行する
    *
@@ -105,6 +96,9 @@ class Dummy {
     });
   } //  testEc2ManualsPressStop()
 
+}
+
+class Dummy {
   /**
    * 「起動」ボタンを押すと「起動処理中」に移行する
    *
