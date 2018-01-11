@@ -27,6 +27,7 @@ $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
 $ ./artisan key:generate
+$ createdb laravel  （DB が存在しない場合）
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
