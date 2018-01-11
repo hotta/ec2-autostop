@@ -2,29 +2,32 @@
 
 このプログラムは AWS の EC2 インスタンスの起動／停止制御を行います。基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
 
-IAM ロールを持つインスタンス以外で実行する場合、IAM アカウント情報の設定が必要です。AWS のアカウントがない場合でも、DB を使って EC2 の動作をエミュレートすることも可能です。
+IAM ロールを持つインスタンス以外で実行する場合、IAM アカウント情報の設定が必要です。デフォルトでは DB を使って EC2 の動作をエミュレートします。
 
 # 前提条件
 
 - ( Vagrant + VirtualBox + ) CentOS7.x + Laravel の環境
-  - https://github.com/hotta/laravel-centos7 の環境で動作を確認しています。
-  - 想定環境：php-7.x + nginx + php-fpm + DB(PostgreSQL) + laravel-5.5.x + php-sdk-php-laravel-3.0
+- https://github.com/hotta/ansible-centos7 の環境で動作を確認しています。
 
 # 環境構築手順
 
 ```bash
-$ git clone https://github.com/hotta/ec2-autostop.git
-$ echo 'export LARAVEL_HOME=/var/www/laravel' >> ~/.bashrc && . ~/.bashrc
-$ cp -rp ec2-autostop/* $LARAVEL_HOME
-$ cd $LARAVEL_HOME
-$ vi .env （IAM アカウント等の設定を行う - 後述）
-（ローカルで模擬環境を構築する場合、最低でも EC2_EMULATION=true を指定すること）
+$ composer global require laravel/installer
+$ git clone https://github.com/hotta/ec2-autostop.git laravel
+$ cd laravel
+$ cp env.default .env
+$ composer install
+$ cd
+$ sudo rm -rf /var/www/laravel
+$ sudo mv laravel /var/www
+$ ln -s /var/www/laravel .
+$ cd laravel
 $ touch storage/logs/laravel.log
 $ sudo chown -R nginx bootstrap/cache storage
 $ sudo chmod -R a+w bootstrap/cache storage
 $ sudo chmod +x artisan
-$ rm -rf composer.lock
-$ composer require aws/aws-sdk-php-laravel:~3.0
+$ ./artisan key:generate
+$ createdb laravel  （DB が存在しない場合）
 $ ./artisan migrate
 $ ./artisan | grep ec2
  ec2
@@ -75,7 +78,7 @@ Help:
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-artisan ec2:list ではすべてのインスタンスを表示しますが、Web インターフェイスで表示されるのは Terminable（終了可能）が true のインスタンスのみです。
+artisan ec2:list ではすべてのインスタンスを表示します。Web インターフェイスで表示されるのは、インスタンスに設定されている Terminable（終了可能）タグの値が true のインスタンスだけです。
 
 # 各インスタンスに設定するべきタグ
 
@@ -119,3 +122,4 @@ ARTISAN='php /var/www/larave/artisan'
 | AWS_ACCESS_KEY_ID     | Access Key        | (IAMロールが付与されていない場合に指定）    | 
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
+- EC2_EMULATION=false にして、かつ AWS* を適切に設定することで、EC2 実環境の制御が行なえます。
