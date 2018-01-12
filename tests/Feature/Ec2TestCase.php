@@ -3,23 +3,43 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class Ec2TestCase extends TestCase
 {
+  use RefreshDatabase;
+
   /**
-   * テスト前処理
+   *  テストケースクラス全体の前処理
+   */
+  public static function setUpBeforeClass()
+  {
+  }
+
+  /**
+   * テストケースごとの前処理
    *
    * @return void
    */
   public function setUp()
   {
     parent::setUp();
-//  $this->artisan('migrate:refresh');//  テーブル作り直し(database/migrations)
-//  $this->seed();                    //  テストデータ投入(database/seeds)
     putenv('EC2_EMULATION=true');
   } //  Ec2TestCase :: setUp()
+
+  /**
+   *  テストケースごとの後処理
+   */
+  public function tearDown()
+  {
+  }
+
+  /**
+   *  テストケースクラス全体の後処理
+   */
+  public static function tearDownAfterClass()
+  {
+  }
 
 } //  class Ec2TestCase extends TestCase
