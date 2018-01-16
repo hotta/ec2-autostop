@@ -5,11 +5,12 @@ namespace Tests\Feature;
 use App\Console\Commands\Ec2ListCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Illuminate\Support\Facades\DB;
 
 class Ec2ListCommandTest extends Ec2CommandTestCase
 {
   /**
-   * テスト前処理
+   * テストケースごとの前処理
    *
    * @return void
    */
@@ -27,6 +28,18 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
     $command = $app->find('ec2:list');
     $this->command = new CommandTester($command);
   }
+
+  /**
+   * ec2:list - 登録データなし
+   *
+   */
+  public function testEc2ListCommandWithoutData()
+  {
+    DB::table('fake_ec2')->delete();   //  全件削除
+    $output = $this->execute();
+    $this->assertNotContains('running', trim($output));
+  }
+
 
   /**
    * ec2:list - 正常系（引数なし）

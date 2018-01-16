@@ -60,6 +60,7 @@ class Ec2ListCommand extends Ec2Command
     $ec2->get();
     $filtered = $ec2->get_instanceList();
     $i = 0;
+    $instances = [];
     foreach ($filtered as $i => $e)  {
       $instances[$i]['nickname']    = $e['nickname'];
       $instances[$i]['private_ip']  = $e['private_ip'];

@@ -3,12 +3,18 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
 class Ec2TestCase extends TestCase
 {
-  use RefreshDatabase;
+  use DatabaseTransactions;
+    //  Ec2TestCase の親クラス test/TestCase.php のさらに親クラス
+    //  Illuminate\Foundation\Testing\TestCase.php にある
+    //  setup() の中の $this->setUpTraits(); により、
+    //  $this->refreshDatabase() の呼び出しが行われる。
+    //  なお、Ec2TestCase クラス宣言の前に use で場所を指定しているので、
+    //  ここでは単純クラス名のみで use できる
 
   /**
    *  テストケースクラス全体の前処理
