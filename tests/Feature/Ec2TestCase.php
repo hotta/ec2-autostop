@@ -12,7 +12,7 @@ class Ec2TestCase extends TestCase
     //  Ec2TestCase の親クラス test/TestCase.php のさらに親クラス
     //  Illuminate\Foundation\Testing\TestCase.php にある
     //  setup() の中の $this->setUpTraits(); により、
-    //  $this->refreshDatabase() の呼び出しが行われる。
+    //  $this->beginDatabaseTransaction() の呼び出しが行われる。
     //  なお、Ec2TestCase クラス宣言の前に use で場所を指定しているので、
     //  ここでは単純クラス名のみで use できる
 
@@ -39,6 +39,11 @@ class Ec2TestCase extends TestCase
    */
   public function tearDown()
   {
+    parent::tearDown();
+    //  Illuminate\Foundation\Testing\TestCase.php にある tearDown() で、
+    //  beginDatabaseTransaction() により登録された
+    //  beforeApplicationDestroyed() コールバックが呼び出されることにより、
+    //  DB のロールバックが行われる。
   }
 
   /**
