@@ -1,20 +1,14 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Command;
 
 use App\Console\Commands\Ec2StartCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Output\OutputInterface;
-use App\FakeEc2;
 
 class Ec2StartCommandTest extends Ec2CommandTestCase
 {
-  const NICKNAME    = 'dev1';
-  const INSTANCE_ID = 'i-dev1';
-
-  private $fake;
-
   /**
    * テスト前処理
    *
@@ -33,8 +27,6 @@ class Ec2StartCommandTest extends Ec2CommandTestCase
     // CommandTesterを被せる
     $command = $app->find('ec2:start');
     $this->command = new CommandTester($command);
-
-    $this->fake = new FakeEc2;
   }
 
   /**
