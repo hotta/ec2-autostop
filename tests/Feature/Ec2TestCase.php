@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -10,9 +9,9 @@ class Ec2TestCase extends TestCase
 {
   use DatabaseTransactions;
     //  Ec2TestCase の親クラス test/TestCase.php のさらに親クラス
-    //  Illuminate\Foundation\Testing\TestCase.php にある
-    //  setup() の中の $this->setUpTraits(); により、
-    //  $this->beginDatabaseTransaction() の呼び出しが行われる。
+    //  Illuminate\Foundation\Testing\TestCase.php にある setup() の中の
+    //  $this->setUpTraits(); により、$this->beginDatabaseTransaction() 
+    //  の呼び出しが行われる。
     //  なお、Ec2TestCase クラス宣言の前に use で場所を指定しているので、
     //  ここでは単純クラス名のみで use できる
 
@@ -40,7 +39,7 @@ class Ec2TestCase extends TestCase
   public function tearDown()
   {
     parent::tearDown();
-    //  Illuminate\Foundation\Testing\TestCase.php にある tearDown() で、
+    //  Illuminate\Foundation\Testing\TestCase.php にある tearDown() の中で、
     //  beginDatabaseTransaction() により登録された
     //  beforeApplicationDestroyed() コールバックが呼び出されることにより、
     //  DB のロールバックが行われる。
