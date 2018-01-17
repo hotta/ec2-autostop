@@ -1,6 +1,8 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Command;
+
+use Tests\Ec2TestCase;
 
 class Ec2CommandTestCase extends Ec2TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Command;
 
 use App\Console\Commands\Ec2ListCommand;
 use Symfony\Component\Console\Application;
@@ -33,7 +33,7 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
    * ec2:list - 登録データなし
    *
    */
-  public function testEc2ListCommandWithoutData()
+  public function testEc2ListWithoutData()
   {
     DB::table('fake_ec2')->delete();   //  全件削除
     $output = $this->execute();
@@ -45,7 +45,7 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
    * ec2:list - 正常系（引数なし）
    *
    */
-  public function testEc2ListCommandWithoutArguments()
+  public function testEc2ListWithoutArguments()
   {
     $output = $this->execute();
     $this->assertContains('running', trim($output));
@@ -57,9 +57,20 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
    * @expectedException InvalidArgumentException
    * @expectedExceptionMessage The "--unknown" option does not exist.
    */
-  public function testEc2ListCommandWithExtraArgs()
+  public function testEc2ListWithExtraArgs()
   {
     $this->execute(['--unknown' => 'dummy']);
+  }
+
+  /**
+   * ec2:list - 異常系（Nickname に null がセットされた）
+   *
+   */
+  public function testEc2ListNicknameIsNull()
+  {
+    $this->fake->changeNickname(self::INSTANCE_ID, null);
+    $output = $this->execute();
+    $this->assertContains('running', trim($output));
   }
 
 } //  class Ec2ListCommandTest extends TestCase

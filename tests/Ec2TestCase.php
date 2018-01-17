@@ -1,12 +1,21 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
+use App\FakeEc2;
+use Mockery;      //  mockery/mockery/library/Mockery.php
 
 class Ec2TestCase extends TestCase
 {
+  const NICKNAME    = 'dev1';
+  const INSTANCE_ID = 'i-dev1';
+
+  protected $fake;  //  EC2 エミュレーション用オブジェクト
+  protected $time;  //  停止予定時刻
+  protected $mock;  //  Mockery オブジェクト
+
   use DatabaseTransactions;
     //  Ec2TestCase の親クラス test/TestCase.php のさらに親クラス
     //  Illuminate\Foundation\Testing\TestCase.php にある setup() の中の
@@ -31,6 +40,16 @@ class Ec2TestCase extends TestCase
   {
     parent::setUp();
     putenv('EC2_EMULATION=true');
+
+    $this->fake = new FakeEc2;
+
+    //  いったん全インスタンスを停止の対象外にする。
+    $this->fake->update(['terminable' => false]);
+    //  その後、各テストでは特定のインスタンスだけを再度 Terminable=true
+    //  に変えることで、テスト対象インスタンスだけが表示されるようにする。
+    $this->time = date('H:i:00', time() + 3600); //  現在時刻の１時間後
+    $this->mock = Mockery::mock();
+    $this->mock->allows()->scheduled()->andReturns($this->time);
   } //  Ec2TestCase :: setUp()
 
   /**
