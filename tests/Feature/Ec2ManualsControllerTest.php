@@ -1,28 +1,16 @@
 <?php
 //
-// 注意！以下のケースでは意図しない状態遷移が発生してテストに失敗する：
-//  ・queue:listen や queue:work が動いている
-//  ・デフォルトの phpunit.xml 
-//    - QUEUE_DRIVER=sync になっており、ジョブのキューイングが行われない。
+// 注意！以下のケースではテストに失敗する：
+//  ・queue:listen や queue:work が動いていて、自動的に状態遷移する。
+//  ・phpunit.xml:QUEUE_DRIVER=sync のため、ジョブのキューイングが行われない。
 
 namespace Tests\Feature;
 
-use Mockery;
-use App\Console\Commands\Ec2AutostopCommand;
-use Symfony\Component\Console\Application;
 use App\FakeEc2;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Ec2TestCase;
 
 class Ec2ManualsControllerTest extends Ec2TestCase
 {
-  const NICKNAME    = 'dev1';
-  const INSTANCE_ID = 'i-dev1';
-
-  private $fake;    //  疑似インスタンス
-  private $time;    //  停止予定時刻
-  private $mock;    //  Mockery オブジェクト
-
   /**
    * テスト前処理：各テストの実行前に毎回呼ばれる
    *
@@ -31,15 +19,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
   public function setUp()
   {
     parent::setUp();
-
-    $this->fake = new FakeEc2;
-    //  いったん全インスタンスを停止の対象外にする。
-    $this->fake->update(['terminable' => false]);
-    //  その後、各テストでは特定のインスタンスだけを再度 Terminable=true 
-    //  に変えることで、テスト対象インスタンスだけが表示されるようにする。
-    $this->time = date('H:i:00', time() + 3600); //  現在時刻の１時間後
-    $this->mock = Mockery::mock();
-    $this->mock->allows()->scheduled()->andReturns($this->time);
   }
 
   /**
@@ -49,35 +28,52 @@ class Ec2ManualsControllerTest extends Ec2TestCase
    */
   public function tearDown()
   {
-    Mockery::close();
     parent::tearDown();
   }
 
   /**
-   * GUI 画面起動
-   *
+   * GUI 画面起動（表示対象インスタンスなし）
    */
-  public function testEc2ManualsInit()
+  public function testEc2ManualsNoTerminable()
+  {
+    $this->get('/')     //  ここにアクセスすると以下を表示
+        ->assertDontSee(self::NICKNAME);  //  サーバー名が表示されない
+  } //  Ec2ManualsControllerTest :: testEc2ManualsNoTerminable()
+
+  /**
+   * GUI 画面起動（正常：表示対象インスタンス１件のみ）
+   */
+  public function testEc2ManualsNormal()
   {
       //  インスタンスの状態を running にする
     $this->fake->changeState(self::INSTANCE_ID, 'running');
       //  インスタンスの Terminable（停止可能）を true （自動制御可能）にする
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
       //  インスタンスの Stop_at （停止予定時刻）を１時間後にする
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->time);
+    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
 
     $this->get('/')     //  ここにアクセスすると以下を表示
-        ->assertSee(self::NICKNAME)           //  サーバー名
-        ->assertSee('動作中')                 //  稼働状況
-        ->assertSee('停止')                   //  ボタン表示
-//      ->assertSee($this->mock->scheduled()) //  本日の停止予定
-//      ->assertSee('手動モードへ')           //  ボタン表示
+        ->assertSee(self::NICKNAME)       //  サーバー名
+        ->assertSee('動作中')             //  稼働状況
+        ->assertSee('停止')               //  ボタン表示
+        ->assertSee($this->oneHourAfter)  //  本日の停止予定
+        ->assertSee('手動モードへ')       //  ボタン表示
         ;
   } //  Ec2ManualsControllerTest :: testEc2ManualsInit()
 
-}
-
-class Dummy {
+  /**
+   * Tag:Name=null があっても正常に動作する
+   */
+  public function testEc2ManualsWhenNicknameIsNullOk()
+  {
+    $this->fake->changeNickname(self::INSTANCE_ID, null);
+    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, true);
+    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
+    $this->get('/')
+        ->assertStatus(200);
+  }
   /**
    * 「停止」ボタンを押すと「停止処理中」に移行する
    *
@@ -86,13 +82,18 @@ class Dummy {
   {
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->time);
+    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
 
     $url = sprintf('/manual/stop/%s/%s', self::INSTANCE_ID, self::NICKNAME);
-    $data = [ 'id' => "stop_i-dev1" ];
-    $this->post($url, $data)  //  '停止' をクリックして
-        ->assertSee('停止処理中')  //  これが表示されて
-        ->assertNotSee($this->mock->scheduled());  //  これは見えない
+    $this->assertEquals("/manual/stop/i-dev1/dev1", $url);
+    $data = [ 'id' => "stop_" . self::INSTANCE_ID];
+    $this->assertEquals([ 'id' => "stop_i-dev1"], $data);
+
+    $this->followingRedirects()     //  リダイレクトに追随する
+        //  cf. https://github.com/laravel/framework/pull/21771
+        ->post($url, $data)         //  '停止' をクリックすると
+        ->assertSee('停止処理中')   //  これが表示されて
+        ->assertDontSee($this->oneHourAfter);  //  これは見えない
   } //  testEc2ManualsPressStop()
 
   /**
@@ -101,16 +102,17 @@ class Dummy {
    */
   public function testEc2ManualsPressStart()
   {
-    $one_hour_after = date('H:i:00', time() + 3600); //  現在時刻の１時間後
     $this->fake->changeState(self::INSTANCE_ID, 'stopped');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $one_hour_after);
-    $this->visit('/')                 //  ここにアクセスすると
-         ->dontSee($one_hour_after)   //  これは表示されず、
-         ->press('起動')              //  これを押したら
-         ->seePageIs('/')             //  ここに戻って
-         ->see('起動処理中')          //  これが表示されて
-         ->see('手動モード');         //  これが表示される
+    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
+
+    $url = sprintf('/manual/start/%s/%s', self::INSTANCE_ID, self::NICKNAME);
+    $data = [ 'id' => "start_" . self::INSTANCE_ID];
+
+    $this->followingRedirects()     //  リダイレクトに追随する
+        ->post($url, $data)         //  '起動' をクリックすると
+        ->assertSee('起動処理中')   //  これが表示されて
+        ->assertDontSee($this->oneHourAfter);  //  これは見えない
   }
 
   /**
@@ -119,53 +121,17 @@ class Dummy {
    */
   public function testEc2ManualsPressManualMode()
   {
-    $one_hour_after = date('H:i:00', time() + 3600); //  現在時刻の１時間後
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $one_hour_after);
-    $this->visit('/')                 //  ここにアクセスすると
-         ->see($one_hour_after)       //  これが表示され、
-         ->press('手動モードへ')      //  これを押したら
-         ->seePageIs('/')             //  ここに戻って
-         ->dontSee($one_hour_after)   //  この表示が消えて
-         ->see('手動モード');         //  これが表示される
-  }
+    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
 
-  /**
-   * Tag:Name=null の場合、妥当性チェックに引っかかって 503 になる
-   * @TODO 本来は 503 を返すべき
-   * @group only
-   */
-  public function testEc2ManualsWhenNicknameIsNull()
-  {
-    $one_hour_after = date('H:i:00', time() + 3600); //  現在時刻の１時間後
-    $this->fake->changeNickname(self::INSTANCE_ID, null);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $one_hour_after);
-//  $this->get(route('manual.index')) //  visit() は 200 を期待するので使えない
-    $this->call('GET', '/');
-    $this->assertResponseStatus(500); //  HTTP/503 （システムエラー）
-  }
+    $url = sprintf('/manual/to_manual/%s/%s', self::INSTANCE_ID,self::NICKNAME);
+    $data = [ 'id' => "manual_" . self::INSTANCE_ID];
 
-  /**
-   * Tag:Description=null の場合、正常に動作する（＝省略可）
-   *
-   */
-  public function testEc2ManualsWhenDescriptionIsNull()
-  {
-    $one_hour_after = date('H:i:00', time() + 3600); //  現在時刻の１時間後
-    $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, null);
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $one_hour_after);
-    $this->visit('/')             //  ここにアクセスすると
-         ->see(self::NICKNAME)    //  ニックネームが表示され、
-         ->see($one_hour_after)   //  停止予定時刻が表示され、
-         ->see('動作中')          //  これが表示され、
-         ->see('停止');           //  「停止」ボタンがあること
+    $this->followingRedirects()     //  リダイレクトに追随する
+        ->post($url, $data)         //  '手動モードへ' をクリックすると
+        ->assertSee('手動モード')   //  これが表示されて
+        ->assertDontSee($this->oneHourAfter);  //  これは見えない
   }
 
   /**
@@ -174,33 +140,19 @@ class Dummy {
    */
   public function testEc2ManualsWhenStopatIsNull()
   {
-    $one_hour_after = date('H:i:00', time() + 3600); //  現在時刻の１時間後
-    $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
     $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, true);
     $this->fake->changeStopAt(self::INSTANCE_ID, null);
-    $this->visit('/')               //  ここにアクセスすると
-         ->see(self::NICKNAME)      //  ニックネームが表示され
-         ->see('停止')              //  「停止」ボタンはあるが、
-         ->dontSee('手動モードへ'); //  このボタンは出さない
+    $this->get('/')
+        ->assertSee(self::NICKNAME)           //  サーバー名
+        ->assertSee('停止')                   //  ボタン表示
+        ->assertDontSee($this->oneHourAfter)  //  本日の停止予定
+        ->assertDontSee('手動モードへ')       //  ボタン表示
+        ;
   }
+}
 
-  /**
-   * Tag:stop_at=(無効入力) の場合、妥当性チェックに引っかかって 503 になる
-   * @TODO 本来は 503 を返すべき
-   *
-   */
-  public function testEc2ManualsWhenStopatIsInvalid()
-  {
-    $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, 'INVALID');
-    $this->call('GET', '/');        //  visit() は 200 を期待するので使えない
-    $this->assertResponseStatus(500); //  HTTP/503 （システムエラー）
-  }
+class Dummy {
 
   /**
    * Tag:terminabl=false の場合、一覧表に表示しない（制御対象外）
@@ -245,6 +197,24 @@ class Dummy {
     $this->fake->changeStopAt(self::INSTANCE_ID, '17:00');
     $this->visit('/')               //  ここにアクセスすると
          ->dontSee(self::NICKNAME); //  ニックネームが表示されない
+  }
+
+  /**
+   * Tag:stop_at=(無効値) の場合、「手動モードへ」ボタンは表示しない
+   *  現在は stop_at がフォーマットに沿っていない場合、内部で 'manual'
+   *  に書き換えている。別途 'manual' カラムを増やして対応する？
+   */
+  public function testEc2ManualsWhenStopatIsInvalid()
+  {
+    $this->fake->changeState(self::INSTANCE_ID, 'running');
+    $this->fake->changeTerminable(self::INSTANCE_ID, true);
+    $this->fake->changeStopAt(self::INSTANCE_ID, 'INVALID');
+    $this->get('/')
+        ->assertSee(self::NICKNAME)           //  サーバー名
+        ->assertSee('停止')                   //  ボタン表示
+        ->assertDontSee($this->oneHourAfter)  //  本日の停止予定
+        ->assertDontSee('手動モードへ')       //  ボタン表示
+        ;
   }
 
 } //  class Ec2ManualsControllerTest extends TestCase

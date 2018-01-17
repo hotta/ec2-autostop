@@ -91,7 +91,7 @@ artisan ec2:list ではすべてのインスタンスを表示します。Web �
 
 # 実運用時の crontab 設定（例）
 
-Laravel のスケジュール機能は使わないで単発コマンドのみで制御することを想定しているので、以下のようになります。
+Laravel のスケジュール機能は使わず、単発のコマンドのみで制御することを想定しているので、以下のようになります。
 
 ```crontab
 ARTISAN='php /var/www/larave/artisan'
