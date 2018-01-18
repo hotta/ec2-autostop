@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use App\FakeEc2;
@@ -15,23 +15,21 @@ class Ec2TestCase extends TestCase
   protected $fake;  //  EC2 エミュレーション用オブジェクト
   protected $oneHourAfter;  //  停止予定時刻
 
-  use DatabaseTransactions;
-    //  Ec2TestCase の親クラス test/TestCase.php のさらに親クラス
-    //  Illuminate\Foundation\Testing\TestCase.php にある setup() の中の
-    //  $this->setUpTraits(); により、$this->beginDatabaseTransaction() 
-    //  の呼び出しが行われる。
-    //  なお、Ec2TestCase クラス宣言の前に use で場所を指定しているので、
-    //  ここでは単純クラス名のみで use できる
+  use RefreshDatabase;
+  //  Ec2TestCase の親クラス test/TestCase.php のさらに親クラス
+  //  Illuminate\Foundation\Testing\TestCase.php にある setup() の中の
+  //  $this->setUpTraits(); から、$this->refreshDatabase() が呼ばれる。
+  //  これにより、各テストケース毎にデータベースがまっさらになる。
 
-  //  現在は、DBの内容が想定外の場合テストに失敗する。
-  //  トランザクションで元に戻すより、setUp() で migrate:refresh して、
-  //  個々のテストケースで必要なレコードのみ登録するほうがよいのかも？
-  
+  //  なお、Ec2TestCase クラス宣言の前に use で場所を指定しているので、
+  //  ここでは単純クラス名のみで use できる
+
   /**
    *  テストケースクラス全体の前処理
    */
   public static function setUpBeforeClass()
   {
+    //  ここは Laravel の初期化前なので、Laravel の機能は使えない。
   }
 
   /**
@@ -46,10 +44,16 @@ class Ec2TestCase extends TestCase
 
     $this->fake = new FakeEc2;
 
-    //  いったん全インスタンスを停止の対象外にする。
-    DB::table('fake_ec2')->update(['terminable' => false]);
-    //  その後、各テストでは特定のインスタンスだけを再度 Terminable=true
-    //  に変えることで、テスト対象インスタンスだけが表示されるようにする。
+    DB::table('fake_ec2')->insert([
+      'nickname'    => self::NICKNAME,
+      'instance_id' => self::INSTANCE_ID,
+      'description' => 'ダミー#1',
+      'terminable'  => false,       //  停止対象外
+      'stop_at'     => '14:00',
+      'private_ip'  => '172.16.0.8',
+      'state'       => 'running',
+    ]);
+    //  各テストでは必要に応じて Terminable=true にする。
     $this->oneHourAfter = date('H:i:00', time() + 3600); //  現在時刻の１時間後
   } //  Ec2TestCase :: setUp()
 
