@@ -36,6 +36,8 @@ class Ec2ManualsControllerTest extends Ec2TestCase
    */
   public function testEc2ManualsNoTerminable()
   {
+    $this->fake->changeTerminable(self::INSTANCE_ID, false);
+      //  インスタンスの Terminable（停止可能）を「対象外」にする
     $this->get('/')     //  ここにアクセスすると以下を表示
         ->assertDontSee(self::NICKNAME);  //  サーバー名が表示されない
   } //  Ec2ManualsControllerTest :: testEc2ManualsNoTerminable()
@@ -45,13 +47,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
    */
   public function testEc2ManualsNormal()
   {
-      //  インスタンスの状態を running にする
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-      //  インスタンスの Terminable（停止可能）を true （自動制御可能）にする
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-      //  インスタンスの Stop_at （停止予定時刻）を１時間後にする
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
-
     $this->get('/')     //  ここにアクセスすると以下を表示
         ->assertSee(self::NICKNAME)       //  サーバー名
         ->assertSee('動作中')             //  稼働状況
@@ -67,10 +62,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
   public function testEc2ManualsWhenNicknameIsNullOk()
   {
     $this->fake->changeNickname(self::INSTANCE_ID, null);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
     $this->get('/')
         ->assertStatus(200);
   }
@@ -80,10 +71,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
    */
   public function testEc2ManualsPressStop()
   {
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
-
     $url = sprintf('/manual/stop/%s/%s', self::INSTANCE_ID, self::NICKNAME);
     $this->assertEquals("/manual/stop/i-dev1/dev1", $url);
     $data = [ 'id' => "stop_" . self::INSTANCE_ID];
@@ -103,8 +90,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
   public function testEc2ManualsPressStart()
   {
     $this->fake->changeState(self::INSTANCE_ID, 'stopped');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
 
     $url = sprintf('/manual/start/%s/%s', self::INSTANCE_ID, self::NICKNAME);
     $data = [ 'id' => "start_" . self::INSTANCE_ID];
@@ -121,10 +106,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
    */
   public function testEc2ManualsPressManualMode()
   {
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
-    $this->fake->changeStopAt(self::INSTANCE_ID, $this->oneHourAfter);
-
     $url = sprintf('/manual/to_manual/%s/%s', self::INSTANCE_ID,self::NICKNAME);
     $data = [ 'id' => "manual_" . self::INSTANCE_ID];
 
@@ -140,8 +121,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
    */
   public function testEc2ManualsWhenStopatIsNull()
   {
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
     $this->fake->changeStopAt(self::INSTANCE_ID, null);
     $this->get('/')
         ->assertSee(self::NICKNAME)           //  サーバー名
@@ -150,9 +129,6 @@ class Ec2ManualsControllerTest extends Ec2TestCase
         ->assertDontSee('手動モードへ')       //  ボタン表示
         ;
   }
-}
-
-class Dummy {
 
   /**
    * Tag:terminabl=false の場合、一覧表に表示しない（制御対象外）
@@ -160,13 +136,9 @@ class Dummy {
    */
   public function testEc2ManualsWhenTerminalsIsFalse()
   {
-    $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, false);
-    $this->fake->changeStopAt(self::INSTANCE_ID, '17:00');
-    $this->visit('/')               //  ここにアクセスすると
-         ->dontSee(self::NICKNAME); //  ニックネームが表示されない
+    $this->get('/')
+         ->assertDontSee(self::NICKNAME);   //  ニックネームが表示されない
   }
 
   /**
@@ -175,13 +147,9 @@ class Dummy {
    */
   public function testEc2ManualsWhenTerminalsIsNull()
   {
-    $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, null);
-    $this->fake->changeStopAt(self::INSTANCE_ID, '17:00');
-    $this->visit('/')               //  ここにアクセスすると
-         ->dontSee(self::NICKNAME); //  ニックネームが表示されない
+    $this->get('/')
+         ->assertDontSee(self::NICKNAME);   //  ニックネームが表示されない
   }
 
   /**
@@ -190,13 +158,9 @@ class Dummy {
    */
   public function testEc2ManualsWhenTerminalsIsInvalid()
   {
-    $this->fake->changeNickname(self::INSTANCE_ID, self::NICKNAME);
-    $this->fake->changeDescription(self::INSTANCE_ID, 'Test');
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
     $this->fake->changeTerminable(self::INSTANCE_ID, 'INVALID');
-    $this->fake->changeStopAt(self::INSTANCE_ID, '17:00');
-    $this->visit('/')               //  ここにアクセスすると
-         ->dontSee(self::NICKNAME); //  ニックネームが表示されない
+    $this->get('/')
+         ->assertDontSee(self::NICKNAME);   //  ニックネームが表示されない
   }
 
   /**
@@ -204,10 +168,8 @@ class Dummy {
    *  現在は stop_at がフォーマットに沿っていない場合、内部で 'manual'
    *  に書き換えている。別途 'manual' カラムを増やして対応する？
    */
-  public function testEc2ManualsWhenStopatIsInvalid()
+  public function _testEc2ManualsWhenStopatIsInvalid()
   {
-    $this->fake->changeState(self::INSTANCE_ID, 'running');
-    $this->fake->changeTerminable(self::INSTANCE_ID, true);
     $this->fake->changeStopAt(self::INSTANCE_ID, 'INVALID');
     $this->get('/')
         ->assertSee(self::NICKNAME)           //  サーバー名

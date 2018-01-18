@@ -43,18 +43,17 @@ class Ec2TestCase extends TestCase
     putenv('EC2_EMULATION=true');
 
     $this->fake = new FakeEc2;
+    $this->oneHourAfter = date('H:i:00', time() + 3600);
 
     DB::table('fake_ec2')->insert([
       'nickname'    => self::NICKNAME,
       'instance_id' => self::INSTANCE_ID,
       'description' => 'ダミー#1',
-      'terminable'  => false,       //  停止対象外
-      'stop_at'     => '14:00',
+      'terminable'  => true,                  //  停止対象
+      'stop_at'     => $this->oneHourAfter,   //  現在時刻の１時間後
       'private_ip'  => '172.16.0.8',
       'state'       => 'running',
     ]);
-    //  各テストでは必要に応じて Terminable=true にする。
-    $this->oneHourAfter = date('H:i:00', time() + 3600); //  現在時刻の１時間後
   } //  Ec2TestCase :: setUp()
 
   /**

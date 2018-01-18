@@ -40,7 +40,6 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
     $this->assertNotContains('running', trim($output));
   }
 
-
   /**
    * ec2:list - 正常系（引数なし）
    *
@@ -63,14 +62,14 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
   }
 
   /**
-   * ec2:list - 異常系（Nickname に null がセットされた）
-   *
+   * ec2:list - 正常系：Nickname が null でも表示する）
    */
   public function testEc2ListNicknameIsNull()
   {
     $this->fake->changeNickname(self::INSTANCE_ID, null);
     $output = $this->execute();
     $this->assertContains('running', trim($output));
+    $this->assertContains('(null)', trim($output));
   }
 
 } //  class Ec2ListCommandTest extends TestCase
