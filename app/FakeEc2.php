@@ -10,16 +10,16 @@ use RuntimeException;
 use Illuminate\Database\Query\Builder;
 use App\Jobs\ChangeStateJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use App\FakeEc2;
 
 class FakeEc2 extends Model
 {
   use DispatchesJobs;
 
-  protected $table = 'fake_ec2';          //  実テーブル名
+  protected $table = 'fake_ec2';          //  実テーブル名（省略可）
   protected $primaryKey = 'instance_id';  //  プライマリキー項目名
-  public $incrementing = false;           //  主キーは自動増分?
-  public $timestamps = false;             //  自動更新のタイムスタンプ項目あり
+  protected $keyType = 'String';          //  主キーは int でない
+  public $incrementing = false;           //  主キーは自動増分でない
+  public $timestamps = false;   //  自動更新のタイムスタンプ項目あり
 
   /**
    * EC2 インスタンスの名称変更（テスト用）

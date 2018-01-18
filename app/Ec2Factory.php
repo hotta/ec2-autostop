@@ -148,7 +148,7 @@ class Ec2Factory
   private function normalize()  {
     if (!$this->normalize_mandatory() ||
         !$this->normalize_stop_at()) {
-      if (php_sapi_name() == 'cli')  {
+      if (php_sapi_name() == 'cli')  {  //  phpunit でもこちらになる
         $logfile = storage_path() . '/logs/laravel.log';
           throw new RuntimeException(
             sprintf('タグ設定エラー：%s で詳細を確認してください。', $logfile));
@@ -173,7 +173,6 @@ class Ec2Factory
 
     for ($i=0; $i<count($this->instanceList); $i++)  {
       foreach ([ 
-        'nickname',     //  タグ名
         'state',        //  AWS API 戻り値
         'instance_id',  //  AWS API 戻り値
         'private_ip'    //  AWS API 戻り値
@@ -200,6 +199,9 @@ class Ec2Factory
   private function normalize_description()  {
 
     for ($i=0; $i<count($this->instanceList); $i++)  {
+      if (!isset($this->instanceList[$i]['nickname'])) {
+        $this->instanceList[$i]['nickname'] = '(null)';
+      }
       if (!isset($this->instanceList[$i]['description'])) {
         $this->instanceList[$i]['description'] = '';
       }
