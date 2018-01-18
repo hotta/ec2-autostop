@@ -22,88 +22,50 @@ class FakeEc2 extends Model
   public $timestamps = false;   //  自動更新のタイムスタンプ項目あり
 
   /**
-   * EC2 インスタンスの名称変更（テスト用）
+   * 属性変更（テスト用）
    *
    * @param  string  $instance_id
-   * @param  string  $nickname
+   * @param  array   $attributes
    * @return void
    */
+  public function change(string $instance_id, array $attributes)
+  {
+    $ec2 = $this->find($instance_id);
+    if (!$ec2)  {
+      throw new RuntimeException('インスタンスが未登録');
+    }
+    foreach ((array)$attributes as $key => $value)  {
+      if (!key_exists($key, $ec2->attributes))  {
+        throw new RuntimeException('そのような属性はありません');
+      }
+      $ec2->attributes[$key] = $value;
+    }
+    $ec2->save();
+  } //  FakeEc2 :: change()
+
   public function changeNickname($instance_id, $nickname = null)
   {
-    $ec2 = $this->find($instance_id);
-    if (!$ec2)  {
-      throw new RuntimeException('インスタンスが未登録');
-    }
-    $ec2->attributes['nickname'] = $nickname;
-    $ec2->save();
+    $this->change($instance_id, [ 'nickname' => $nickname ]);
   }
 
-  /**
-   * EC2 インスタンスの説明文言変更（テスト用）
-   *
-   * @param  string  $instance_id
-   * @param  string  $description
-   * @return void
-   */
   public function changeDescription($instance_id, $description = null)
   {
-    $ec2 = $this->find($instance_id);
-    if (!$ec2)  {
-      throw new RuntimeException('インスタンスが未登録');
-    }
-    $ec2->attributes['description'] = $description;
-    $ec2->save();
+    $this->change($instance_id, [ 'description' => $description ]);
   }
 
-  /**
-   * EC2 インスタンスの状態変更（テスト用）
-   *
-   * @param  string  $instance_id
-   * @param  string  $state
-   * @return void
-   */
   public function changeState($instance_id, $state = 'unKnown')
   {
-    $ec2 = $this->find($instance_id);
-    if (!$ec2)  {
-      throw new RuntimeException('インスタンスが未登録');
-    }
-    $ec2->attributes['state'] = $state;
-    $ec2->save();
+    $this->change($instance_id, [ 'state' => $state ]);
   }
 
-  /**
-   * 「終了可能」フラグの変更（テスト用）
-   *
-   * @param  string  $instance_id
-   * @param  bool    $state
-   * @return void
-   */
   public function changeTerminable($instance_id, $state)
   {
-    $ec2 = $this->find($instance_id);
-    if (!$ec2)  {
-      throw new RuntimeException('インスタンスが未登録');
-    }
-    $ec2->attributes['terminable'] = $state;
-    $ec2->save();
+    $this->change($instance_id, [ 'terminable' => $state ]);
   }
 
-  /**
-   * 終了予定時刻の変更（テスト用）
-   *
-   * @param  string  $instance_id
-   * @param  string  $time
-   * @return void
-   */
   public function changeStopAt($instance_id, $time)
   {
-    $ec2 = $this->find($instance_id);
-    if (!$ec2)  {
-      throw new RuntimeException('インスタンスが未登録');
-    }
-    $ec2->attributes['stop_at'] = $time;
-    $ec2->save();
+    $this->change($instance_id, [ 'stop_at' => $time ]);
   }
 
   /**
@@ -127,7 +89,7 @@ class FakeEc2 extends Model
     $ec2->save();
     //  10秒後に running に遷移
     $this->dispatch(new ChangeStateJob($instance_id, 'running', 10));
-  }
+  } //  FakeEc2 :: start()
 
   /**
    * インスタンスの停止
@@ -150,7 +112,7 @@ class FakeEc2 extends Model
     $ec2->save();
     //  10秒後に stopped に遷移
     $this->dispatch(new ChangeStateJob($instance_id, 'stopped', 10));
-  }
+  } //  FakeEc2 :: stop()
 
   /**
    * インスタンスの再起動
@@ -176,5 +138,6 @@ class FakeEc2 extends Model
     $ec2->save();
     //  10秒後に running に遷移
     $this->dispatch(new ChangeStateJob($instance_id, 'running', 10));
-  }
-}
+  } //  FakeEc2 :: reboot()
+
+} //  class FakeEc2

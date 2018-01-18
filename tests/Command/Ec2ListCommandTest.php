@@ -66,7 +66,7 @@ class Ec2ListCommandTest extends Ec2CommandTestCase
    */
   public function testEc2ListNicknameIsNull()
   {
-    $this->fake->changeNickname(self::INSTANCE_ID, null);
+    $this->fake->change(self::INSTANCE_ID, [ 'nickname' => null]);
     $output = $this->execute();
     $this->assertContains('running', trim($output));
     $this->assertContains('(null)', trim($output));
