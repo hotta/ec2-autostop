@@ -1,8 +1,8 @@
 # 概要
 
-このプログラムは AWS の EC2 インスタンスの起動／停止制御を行います。基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
+このプログラムは、自分が Laravel を学習する際の題材として作成したもので、AWS の EC2 インスタンスの起動／停止制御を行います。基本的には Web 画面で操作しますが、一部の動作は artisan コマンドでも行えます。
 
-IAM ロールを持つインスタンス以外で実行する場合、IAM アカウント情報の設定が必要です。デフォルトでは DB を使って EC2 の動作をエミュレートします。
+デフォルトでは DB を使って EC2 の動作をエミュレートしますので、AWS のアカウントがなくても実行Eできます。実際に EC2 を制御する場合、IAM ロールを持つインスタンスにデプロイして動かします。それ以外の環境から AWS を制御する場合は、アプリに IAM アカウント情報の設定が必要です。
 
 # 前提条件
 
@@ -36,7 +36,7 @@ $ ./artisan | grep ec2
   ec2:reboot          インスタンスを再起動します
   ec2:start           インスタンスを起動します
   ec2:stop            インスタンスを停止します
-$ ./artisan db:seed
+$ ./artisan db:seed （エミュレーションモードで動かす場合に必要）
 $ ./artisan ec2:list 
 
 -----------+-------------+---------+-------------+---------+-------+
@@ -78,7 +78,7 @@ Help:
 
 ![Screenshot](https://github.com/hotta/images/blob/master/svrctl-screenshot.png?raw=true)
 
-artisan ec2:list ではすべてのインスタンスを表示します。Web インターフェイスで表示されるのは、インスタンスに設定されている Terminable（終了可能）タグの値が true のインスタンスだけです。
+artisan ec2:list ではすべてのインスタンスを表示します。一方 Web インターフェイスで表示されるのは、EC2 インスタンス（エミュレーションモードの場合は fake_ec2 テーブル）に設定されている Terminable（終了可能）タグの値が true のものだけです。
 
 # 各インスタンスに設定するべきタグ
 
@@ -108,8 +108,7 @@ ARTISAN='php /var/www/larave/artisan'
   - Terminable=true のもの
   - 動作中のもの
   - 現在時刻が stop_at を過ぎているもの
-  - 「手動モード」でないもの
-    - 「手動モード」＝manuals レコードが存在するもの
+  - 「手動モード」でないもの（manuals レコードが存在するもの）
 
 # .env 設定内容（アプリケーション定義のもの）
 
@@ -122,4 +121,4 @@ ARTISAN='php /var/www/larave/artisan'
 | AWS_ACCESS_KEY_ID     | Access Key        | (IAMロールが付与されていない場合に指定）    | 
 | AWS_SECRET_ACCESS_KEY | Secret Access Key | 同上                                        | 
 | GUI_REMARKS           | 任意の文字列      | GUI 画面の最下段に表示する注意文言          | 
-- EC2_EMULATION=false にして、かつ AWS* を適切に設定することで、EC2 実環境の制御が行なえます。
+- EC2_EMULATION=false にして、かつ AWS\* を適切に設定することで、EC2 実環境の制御が行なえます。

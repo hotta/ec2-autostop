@@ -228,5 +228,13 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+  /**
+   *  アプリケーション固有設定
+   *  env() を使う場合は config/*.php で定義しなければならない：
+   *  cf.https://qiita.com/mpyw/items/34f37742d9a18b80a08c
+   */
+
+    'EC2_EMULATION' => env('EC2_EMULATION', 'false'),
+    'GUI_REMARKS' => env('GUI_REMARKS', ''),
 
 ];

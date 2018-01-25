@@ -28,7 +28,7 @@ class Ec2Factory
 
   public function get_instanceList() {
     return  $this->instanceList;
-  }
+  } // Ec2Factory :: get_instanceList()
 
   /**
    * コンストラクタ
@@ -54,7 +54,7 @@ class Ec2Factory
     if (count($this->instanceList) < 1) {
       $this->get();
     }
-  }
+  } //  Ec2Factory :: setData()
 
   /**
    * 停止可能インスタンス一覧の取得
@@ -71,7 +71,7 @@ class Ec2Factory
       }
     }
     return $ret;
-  }
+  } //  Ec2Factory :: getTerminables()
 
   /**
    * インスタンスIDによる対象インスタンスの取得
@@ -88,7 +88,7 @@ class Ec2Factory
       }
     }
     return null; //  No such instance
-  }
+  } //  Ec2Factory :: findByInstanceId()
 
   /**
    * タグ名による対象インスタンスの取得
@@ -105,7 +105,7 @@ class Ec2Factory
       }
     }
     return null; //  No such name
-  }
+  } //  Ec2Factory :: findByNickname()
 
   /**
    * 表示用日本語ステータスのセット
@@ -138,7 +138,7 @@ class Ec2Factory
         break;
       }
     }
-  }
+  } //  Ec2Factory :: set_state_j()
 
   /**
    * 属性データの正規化
@@ -160,7 +160,7 @@ class Ec2Factory
     $this->normalize_description();
     $this->normalize_terminable();
     return  true;
-  }
+  } //  Ec2Factory :: normalize()
 
   /**
    * 属性データの正規化（必須項目）
@@ -189,7 +189,7 @@ class Ec2Factory
       }
     }
     return true;
-  }
+  } //  Ec2Factory :: normalize_mandatory()
 
   /**
    * 属性データの正規化（説明）
@@ -207,7 +207,7 @@ class Ec2Factory
       }
     }
     return true;
-  }
+  } //  Ec2Factory :: normalize_description()
 
   /**
    * 属性データの正規化（停止時刻）
@@ -222,19 +222,15 @@ class Ec2Factory
       if (!isset($this->instanceList[$i]['stop_at'])  ||
         $this->instanceList[$i]['stop_at'] === '') {
         $this->instanceList[$i]['stop_at'] = '';
-      } else if (!preg_match('/^[012]?[0-9]:[0-5]?[0-9](:[0-5]?[0-9])?$/', 
+      } else if (!preg_match('/^[012]?[0-9]:[0-5][0-9](:[0-5][0-9])?$/', 
           $this->instanceList[$i]['stop_at']))  {
           \Log::error(sprintf("Instance=%s : stop_at format error : \"%s\"", 
             $this->instanceList[$i]['instance_id'],
             $this->instanceList[$i]['stop_at']));
-          return false;
-      }
-      if (! $collection->contains($this->instanceList[$i]['state']))  {
-        $this->instanceList[$i]['stop_at'] = 'manual';
       }
     }
     return  true;
-  }
+  } //  Ec2Factory :: normalize_stop_at()
 
   /**
    * 属性データの正規化（停止可能）
@@ -258,7 +254,7 @@ class Ec2Factory
         $this->instanceList[$i]['terminable'] = false;
       }
     }
-  }
+  } //  Ec2Factory :: normalize_terminable()
 
   /**
    * レコードが存在したら手動モードに変更
@@ -277,7 +273,7 @@ class Ec2Factory
         }
       }
     }
-  }
+  } //  Ec2Factory :: checkManuals()
 
   /**
    * インスタンスの起動
@@ -287,7 +283,7 @@ class Ec2Factory
   public function start($instance_id)
   {
     return $this->auto->start($instance_id);
-  }
+  } //  Ec2Factory :: start()
 
   /**
    * インスタンスの停止
@@ -297,7 +293,7 @@ class Ec2Factory
   public function stop($instance_id)
   {
     return  $this->auto->stop($instance_id);
-  }
+  } //  Ec2Factory :: stop()
 
   /**
    * インスタンスの再起動
@@ -307,7 +303,7 @@ class Ec2Factory
   public function reboot($instance_id)
   {
     return $this->auto->reboot($instance_id);
-  }
+  } //  Ec2Factory :: reboot()
 
   /**
    * Execute the query as a "select" statement.
@@ -339,6 +335,6 @@ class Ec2Factory
       return $this;
     }
     die('Abnormal end');
-  }
+  } //  Ec2Factory :: get()
 
-}
+} //  class Ec2Factory
